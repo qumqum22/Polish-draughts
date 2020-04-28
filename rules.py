@@ -87,19 +87,3 @@ def sprawdzBiciePionka(row_start, column_start, row_end, column_end, gracz):
 
 # Czy dodawac jeszcze 1 zmienna graczK w ktorej jest 0 -dla bialych i -1 dla czarnych. Wtedy moge zrobić:
 # Dodatkową tablice przechowywujacą rodzaje pionkow. figury =[WHITE_PAWN, WHITE_QUINN, BLACK_QUINN, BLACK_PAWN]
-'''
-        if gracz*(row_start - row_end) == 2 and abs(column_start - column_end) == 2:
-            between_column_points = int((column_start + column_end) / 2)  # współrzędna kolumny pomiedzy skokiem
-            if plansza[row_end][column_end] == EMPTY_FIELD:
-                if plansza[row_start - gracz*1][between_column_points] == figury[graczK]: # Tablica[0] lub [-1]
-                    return True  # ruch mozliwy gdy pionek jest miedzy pionkiem a miejscem docelowym
-                elif plansza[row_start - gracz*1][between_column_points] == figury[gracz*1+graczK]: #Tablica[1] lub [-2]
-                    return True  # ruch mozliwy gdy krolowa jest miedzy pionkiem a miejscem docelowym
-                else:
-                    return False
-            else:
-                return False
-        else:
-            return False
-
-'''
