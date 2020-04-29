@@ -6,6 +6,7 @@ from board import wyniesienie
 # (tzn. takie, w którym zbije największą liczbę pionów lub damek przeciwnika).
 # Jeżeli gracz ma dwie lub więcej możliwości bicia takiej samej ilości bierek
 # (pionków, damek lub pionków i damek) przeciwnika, to może wybrać jedną z nich.
+# Implementacja jakiegoś drzewka(?)
 
 #Podczas bicia nie można przeskakiwać więcej niż jeden raz przez tę samą bierkę.
 # Bierki usuwa się z planszy po wykonaniu bicia.
@@ -41,10 +42,20 @@ def ruchGracza(od, do, gracz, graczK):
             print("Ruch niedozwolony")
             return False
     else:
-        pass
+        krotka = sprawdzRuchDamki(row_start, column_start, row_end, column_end, gracz)
+        if krotka[3]:
+            if krotka[0]:
+                plansza[row_start][column_start] = EMPTY_FIELD
+                plansza[krotka[1]][krotka[2]] = EMPTY_FIELD
+                plansza[row_end][column_end] = figure
+            else:
+                plansza[row_start][column_start] = EMPTY_FIELD
+                plansza[row_end][column_end] = figure
+        else:
+            print(krotka[4])
+            return False
 
-
-    wyniesienie(row_end, column_end, gracz)
+    wyniesienie(row_end, column_end, gracz) # jak dodac punkty za wyniesienie
     punktyUpdate(od, do, gracz, graczK)
 
     return True
@@ -72,12 +83,12 @@ def sprawdzBiciePionka(row_start, column_start, row_end, column_end, gracz):
             return False
     else:
         if row_start - row_end == 2 and abs(column_start - column_end) == 2:
-            between_column_points = int((column_start + column_end) / 2)  # współrzędna kolumny pomiedzy skokiem
+            between_column_points = int((column_start + column_end) / 2)
             if plansza[row_end][column_end] == EMPTY_FIELD:
                 if plansza[row_start - 1][between_column_points] == BLACK_PAWN:
-                    return True  # ruch mozliwy gdy pionek bialy jest miedzy pionkiem czarnym a miejscem docelowym
+                    return True
                 elif plansza[row_start - 1][between_column_points] == BLACK_QUINN:
-                    return True  # ruch mozliwy gdy krolowa biala jest miedzy pionkiem czarnym a miejscem docelowym
+                    return True
                 else:
                     return False
             else:
@@ -85,5 +96,71 @@ def sprawdzBiciePionka(row_start, column_start, row_end, column_end, gracz):
         else:
             return False
 
-# Czy dodawac jeszcze 1 zmienna graczK w ktorej jest 0 -dla bialych i -1 dla czarnych. Wtedy moge zrobić:
-# Dodatkową tablice przechowywujacą rodzaje pionkow. figury =[WHITE_PAWN, WHITE_QUINN, BLACK_QUINN, BLACK_PAWN]
+def sprawdzRuchDamki(row_start, column_start, row_end, column_end, gracz):
+    ''' Sprawdza ruch damki, zwraca liczbe pionków przeciwnika pomiedzy, pozycje x,y pionka przeciwnika oraz czy ruch mozliwy'''
+    licznikPionow = 0
+    row = row_end - row_start
+    column = column_end - column_start
+    #row_step
+    #column_step
+    if row > 0:
+        row_step = 1
+    else:
+        row_step = -1
+
+    if column > 0:
+        column_step = 1
+    else:
+        column_step = -1
+
+    if gracz == -1:
+        if plansza[row_end][column_end] == EMPTY_FIELD and abs(row) == abs(column) and row != 0:
+            x_pawn = 0
+            y_pawn = 0
+            for i in range(abs(column_end - column_start)):
+                if plansza[row_start+row_step][column_start+column_step] == WHITE_PAWN:
+                    licznikPionow += 1
+                    x_pawn = row_start+row_step
+                    y_pawn = column_start + column_step
+                elif plansza[row_start+row_step][column_start+column_step] == WHITE_QUINN:
+                    licznikPionow += 1
+                    x_pawn = row_start+row_step
+                    y_pawn = column_start + column_step
+                elif plansza[row_start+row_step][column_start+column_step] == BLACK_PAWN or plansza[row_start+row_step][column_start+column_step] == BLACK_QUINN:
+                    return 0, 0, 0, False, "Nie mozesz skakac poprzez swoich"
+                if row_step*i > 0:
+                    row_step += 1
+                else:
+                    row_step -= 1
+                if column_step*1 > 0:
+                    column_step += 1
+                else:
+                    column_step -= 1
+            if licznikPionow < 2:
+                return licznikPionow, x_pawn, y_pawn, True
+    else:
+        if plansza[row_end][column_end] == EMPTY_FIELD and abs(row) == abs(column) and row != 0:
+            x_pawn = 0
+            y_pawn = 0
+            for i in range(abs(column_end - column_start)):
+                if plansza[row_start+row_step][column_start+column_step] == BLACK_PAWN:
+                    licznikPionow += 1
+                    x_pawn = row_start + row_step
+                    y_pawn = column_start + column_step
+                elif plansza[row_start+row_step][column_start+column_step] == BLACK_QUINN:
+                    licznikPionow += 1
+                    x_pawn = row_start + row_step
+                    y_pawn = column_start + column_step
+                elif plansza[row_start+row_step][column_start+column_step] == WHITE_PAWN or plansza[row_start+row_step][column_start+column_step] == WHITE_QUINN:
+                    return 0, 0, 0, False, "Nie mozesz skakac poprzez swoich"
+                if row_step*i > 0:
+                    row_step += 1
+                else:
+                    row_step -= 1
+                if column_step*1 > 0:
+                    column_step += 1
+                else:
+                    column_step -= 1
+            if licznikPionow < 2:
+                return licznikPionow, x_pawn, y_pawn, True
+    return 0, 0, 0, False, "Blad ruchu"

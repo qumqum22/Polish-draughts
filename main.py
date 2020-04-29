@@ -15,13 +15,13 @@ def rozgrywka():
 
 
     while(1):
-
+        #Petla nie uwzglednia bicia, wystarczy zwracac procz True, drugie True, informacja czy bylo bicie
         if gracz == 1:
             graczK = 0
             ruch, ruch2 = input('Biale: Wskaz pionka i cel: ').split()
             if ruch == 'z':
                 break
-            if not ruchGracza(ruch, ruch2, gracz, graczK):
+            if not ruchGracza(ruch, ruch2, gracz, graczK): # or krotka[1] (bicie True/False)
                 gracz *= -1
                 graczK = -graczK - 1
         else:
@@ -33,9 +33,9 @@ def rozgrywka():
                 gracz *= -1
                 graczK = -graczK - 1
 
-
-        wyswietl()
         gracz *= -1
+        wyswietl()
+
     #wyswietlpunktacje() #wyswietla szachownice punktow
 
 rozgrywka()
@@ -45,13 +45,3 @@ rozgrywka()
 #Dodanie oceny ruchu królowej // krolowa wiecej punkt, pion mniej
 #Dodanie sprawdzania ruchów królowej
 #moge zrobic klase ze zmiennych globalnych
-
-'''
-plansza2 = [[' ' for column in range(SIZE)] for row in range(SIZE)]
-for row in range(0, SIZE, 1):
-    for column in range(0, SIZE, 1):
-        plansza2[row][column] = f'[{row}][{column}]'
-
-for i in range(SIZE):
-    print(i,"\t", plansza2[i])
-'''
