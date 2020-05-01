@@ -14,6 +14,7 @@ from board import wyniesienie
 def ruchGracza(od, do, gracz, graczK):
     row_start, column_start = translate(od)
     row_end, column_end = translate(do)
+    between_row_points = int((row_start + row_end) / 2)
     between_column_points = int((column_start + column_end) / 2)
     if gracz == 1 and plansza[row_start][column_start] == WHITE_PAWN:
         figure = WHITE_PAWN
@@ -36,7 +37,20 @@ def ruchGracza(od, do, gracz, graczK):
             plansza[row_end][column_end] = figure
         elif sprawdzBiciePionka(row_start, column_start, row_end, column_end, gracz):
             plansza[row_start][column_start] = EMPTY_FIELD
-            plansza[row_start - 1][between_column_points] = EMPTY_FIELD
+            ''' Odejmowanie punktow przeciwnikowi od piona i od pozycji piona'''
+            if plansza[between_row_points][between_column_points] == WHITE_PAWN:
+                punktujBiale(-POINTS_PAWN)
+                punktujBiale(-punktyI(between_row_points,between_column_points, -gracz, gracz*graczK - 1))
+            elif plansza[between_row_points][between_column_points] == BLACK_PAWN:
+                punktujCzarne(-POINTS_PAWN)
+                punktujBiale(-punktyI(between_row_points,between_column_points, -gracz, gracz*graczK - 1))
+            elif plansza[between_row_points][between_column_points] == WHITE_QUINN:
+                punktujBiale(-POINTS_QUINN)
+                punktujBiale(-punktyI(between_row_points,between_column_points, -gracz, gracz*graczK - 1))
+            else:
+                punktujCzarne(-POINTS_QUINN)
+                punktujBiale(-punktyI(between_row_points, between_column_points, -gracz, gracz * graczK - 1))
+            plansza[between_row_points][between_column_points] = EMPTY_FIELD
             plansza[row_end][column_end] = figure
         else:
             print("Ruch niedozwolony")

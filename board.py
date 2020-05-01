@@ -1,7 +1,5 @@
 from const import *
-from punktacja import biale
-from punktacja import czarne
-
+from punktacja import *
 def wyswietl():
     ''' Funkcja wyswietla aktualny stan gry '''
     for i in range(SIZE):
@@ -37,12 +35,12 @@ def wyniesienie(x, y, gracz):
     if gracz == 1:
         if x == 0 and plansza[0][y] == WHITE_PAWN:
             plansza[0][y] = WHITE_QUINN
-            #biale += 90
+            punktujBiale(90)
             return True
     else:
         if x == 9 and plansza[9][y] == BLACK_PAWN:
             plansza[9][y] = BLACK_QUINN
-            #czarne += 90
+            punktujCzarne(90)
             return True
     return False
 

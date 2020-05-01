@@ -36,6 +36,16 @@ def wyswietlpunktacje():
         print(i, "\t", punktacja[i])
     print()
 
+def punktujBiale(ile):
+    global biale
+    biale += ile
+
+
+def punktujCzarne(ile):
+    global czarne
+    czarne += ile
+
+
 def punkty(pozycja, gracz, graczK):
     x, y = translate(pozycja)
     wynik = punktacja[gracz*x+graczK][gracz*y+graczK] # dla bialego [x][y], # czarny [-x-1][y]
@@ -51,19 +61,19 @@ def punktyStart():
     for i in range(SIZE):
         for j in range(SIZE):
             if plansza[i][j] == WHITE_PAWN:
-                biale += 10
+                biale += POINTS_PAWN
                 biale += punktyI(i,j, 1, 0)
             elif plansza[i][j] == WHITE_QUINN:
-                biale += 100
+                biale += POINTS_QUINN
                 biale += punktyI(i,j, 1, 0)
             elif plansza[i][j] == BLACK_PAWN:
-                czarne += 10
+                czarne += POINTS_PAWN
                 czarne += punktyI(i, j, -1, -1)
             elif plansza[i][j] == BLACK_QUINN:
-                czarne += 100
+                czarne += POINTS_QUINN
                 czarne += punktyI(i, j, -1, -1)
-    #print(f'Punkty bialego: {biale}')
-    #print(f'Punkty czarnego: {czarne}')
+    print(f'Punkty bialego: {biale}')
+    print(f'Punkty czarnego: {czarne}')
 
 
 def punktyUpdate(od, do, gracz, graczK):
@@ -73,6 +83,8 @@ def punktyUpdate(od, do, gracz, graczK):
     if gracz == 1:
         biale = biale + punkty(do, gracz, graczK) - punkty(od, gracz, graczK)
         print(f'Wynik bialego:{biale}')
+        print(f'Wynik czarnego:{czarne}')
     else:
         czarne = czarne + punkty(do, gracz, graczK) - punkty(od, gracz, graczK)
+        print(f'Wynik bialego:{biale}')
         print(f'Wynik czarnego:{czarne}')
