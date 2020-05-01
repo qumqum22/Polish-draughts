@@ -1,8 +1,7 @@
 import time
-from const import *
+#from const import *
 from design import *
 from board import *
-from temp import *
 from rules import *
 from punktacja import *
 
@@ -13,7 +12,7 @@ def rozgrywka():
     wyswietl()
     punktyStart()
 
-
+    runWindow()
     while(1):
         #Petla nie uwzglednia bicia, wystarczy zwracac procz True, drugie True, informacja czy bylo bicie
         if gracz == 1:

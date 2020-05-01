@@ -63,14 +63,14 @@ def punktyStart():
             if plansza[i][j] == WHITE_PAWN:
                 biale += POINTS_PAWN
                 biale += punktyI(i,j, 1, 0)
-            elif plansza[i][j] == WHITE_QUINN:
-                biale += POINTS_QUINN
+            elif plansza[i][j] == WHITE_QUENN:
+                biale += POINTS_QUENN
                 biale += punktyI(i,j, 1, 0)
             elif plansza[i][j] == BLACK_PAWN:
                 czarne += POINTS_PAWN
                 czarne += punktyI(i, j, -1, -1)
-            elif plansza[i][j] == BLACK_QUINN:
-                czarne += POINTS_QUINN
+            elif plansza[i][j] == BLACK_QUENN:
+                czarne += POINTS_QUENN
                 czarne += punktyI(i, j, -1, -1)
     print(f'Punkty bialego: {biale}')
     print(f'Punkty czarnego: {czarne}')

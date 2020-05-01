@@ -4,6 +4,7 @@ def wyswietl():
     ''' Funkcja wyswietla aktualny stan gry '''
     for i in range(SIZE):
         print(i, "\t", plansza[i])
+        print('-------------------------------------------------------')
 
     print("\n\t   a    b    c    d    e    f    g    h    i    j \n")
 
@@ -24,8 +25,8 @@ def ukladPoczatkowy():
         else:
             for column in range(1, SIZE, 2):
                 plansza[row][column] = WHITE_PAWN
-    plansza[1][0] = WHITE_PAWN
-    plansza[0][1] = EMPTY_FIELD
+    #plansza[1][0] = WHITE_PAWN
+    #plansza[0][1] = EMPTY_FIELD
 
 
 
@@ -34,12 +35,12 @@ def wyniesienie(x, y, gracz):
     global czarne
     if gracz == 1:
         if x == 0 and plansza[0][y] == WHITE_PAWN:
-            plansza[0][y] = WHITE_QUINN
+            plansza[0][y] = WHITE_QUENN
             punktujBiale(90)
             return True
     else:
         if x == 9 and plansza[9][y] == BLACK_PAWN:
-            plansza[9][y] = BLACK_QUINN
+            plansza[9][y] = BLACK_QUENN
             punktujCzarne(90)
             return True
     return False

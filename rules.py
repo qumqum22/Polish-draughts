@@ -22,11 +22,11 @@ def ruchGracza(od, do, gracz, graczK):
     elif gracz == -1 and plansza[row_start][column_start] == BLACK_PAWN:
         figure = BLACK_PAWN
         pion = 1
-    elif gracz == 1 and plansza[row_start][column_start] == WHITE_QUINN:
-        figure = WHITE_QUINN
+    elif gracz == 1 and plansza[row_start][column_start] == WHITE_QUENN:
+        figure = WHITE_QUENN
         pion = 0
-    elif gracz == -1 and plansza[row_start][column_start] == BLACK_QUINN:
-        figure = BLACK_QUINN
+    elif gracz == -1 and plansza[row_start][column_start] == BLACK_QUENN:
+        figure = BLACK_QUENN
         pion = 0
     else:
         print("Ruch niedozwolony")
@@ -44,11 +44,11 @@ def ruchGracza(od, do, gracz, graczK):
             elif plansza[between_row_points][between_column_points] == BLACK_PAWN:
                 punktujCzarne(-POINTS_PAWN)
                 punktujBiale(-punktyI(between_row_points,between_column_points, -gracz, gracz*graczK - 1))
-            elif plansza[between_row_points][between_column_points] == WHITE_QUINN:
-                punktujBiale(-POINTS_QUINN)
+            elif plansza[between_row_points][between_column_points] == WHITE_QUENN:
+                punktujBiale(-POINTS_QUENN)
                 punktujBiale(-punktyI(between_row_points,between_column_points, -gracz, gracz*graczK - 1))
             else:
-                punktujCzarne(-POINTS_QUINN)
+                punktujCzarne(-POINTS_QUENN)
                 punktujBiale(-punktyI(between_row_points, between_column_points, -gracz, gracz * graczK - 1))
             plansza[between_row_points][between_column_points] = EMPTY_FIELD
             plansza[row_end][column_end] = figure
@@ -87,7 +87,7 @@ def sprawdzBiciePionka(row_start, column_start, row_end, column_end, gracz):
             if plansza[row_end][column_end] == EMPTY_FIELD:
                 if plansza[row_start + 1][between_column_points] == WHITE_PAWN:
                     return True  # ruch mozliwy gdy pionek bialy jest miedzy pionkiem czarnym a miejscem docelowym
-                elif plansza[row_start + 1][between_column_points] == WHITE_QUINN:
+                elif plansza[row_start + 1][between_column_points] == WHITE_QUENN:
                     return True  # ruch mozliwy gdy krolowa biala jest miedzy pionkiem czarnym a miejscem docelowym
                 else:
                     return False
@@ -101,7 +101,7 @@ def sprawdzBiciePionka(row_start, column_start, row_end, column_end, gracz):
             if plansza[row_end][column_end] == EMPTY_FIELD:
                 if plansza[row_start - 1][between_column_points] == BLACK_PAWN:
                     return True
-                elif plansza[row_start - 1][between_column_points] == BLACK_QUINN:
+                elif plansza[row_start - 1][between_column_points] == BLACK_QUENN:
                     return True
                 else:
                     return False
@@ -136,11 +136,11 @@ def sprawdzRuchDamki(row_start, column_start, row_end, column_end, gracz):
                     licznikPionow += 1
                     x_pawn = row_start+row_step
                     y_pawn = column_start + column_step
-                elif plansza[row_start+row_step][column_start+column_step] == WHITE_QUINN:
+                elif plansza[row_start+row_step][column_start+column_step] == WHITE_QUENN:
                     licznikPionow += 1
                     x_pawn = row_start+row_step
                     y_pawn = column_start + column_step
-                elif plansza[row_start+row_step][column_start+column_step] == BLACK_PAWN or plansza[row_start+row_step][column_start+column_step] == BLACK_QUINN:
+                elif plansza[row_start+row_step][column_start+column_step] == BLACK_PAWN or plansza[row_start+row_step][column_start+column_step] == BLACK_QUENN:
                     return 0, 0, 0, False, "Nie mozesz skakac poprzez swoich"
                 if row_step*i > 0:
                     row_step += 1
@@ -161,11 +161,11 @@ def sprawdzRuchDamki(row_start, column_start, row_end, column_end, gracz):
                     licznikPionow += 1
                     x_pawn = row_start + row_step
                     y_pawn = column_start + column_step
-                elif plansza[row_start+row_step][column_start+column_step] == BLACK_QUINN:
+                elif plansza[row_start+row_step][column_start+column_step] == BLACK_QUENN:
                     licznikPionow += 1
                     x_pawn = row_start + row_step
                     y_pawn = column_start + column_step
-                elif plansza[row_start+row_step][column_start+column_step] == WHITE_PAWN or plansza[row_start+row_step][column_start+column_step] == WHITE_QUINN:
+                elif plansza[row_start+row_step][column_start+column_step] == WHITE_PAWN or plansza[row_start+row_step][column_start+column_step] == WHITE_QUENN:
                     return 0, 0, 0, False, "Nie mozesz skakac poprzez swoich"
                 if row_step*i > 0:
                     row_step += 1
