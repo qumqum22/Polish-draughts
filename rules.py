@@ -61,18 +61,18 @@ def ruchGracza(od, do, gracz, graczK):
             if krotka[0]:
                 plansza[row_start][column_start] = EMPTY_FIELD
                 ''' Odejmowanie punktow przeciwnikowi od piona i od pozycji piona'''
-                if plansza[krotka[1],[krotka[2]] == WHITE_PAWN:
+                if plansza[krotka[1],krotka[2]] == WHITE_PAWN:
                     punktujBiale(-POINTS_PAWN)
-                    punktujBiale(-punktyI(krotka[1], [krotka[2], -gracz, gracz * graczK - 1))
-                elif plansza[krotka[1],[krotka[2]] == BLACK_PAWN:
+                    punktujBiale(-punktyI(krotka[1], krotka[2], -gracz, gracz * graczK - 1))
+                elif plansza[krotka[1], krotka[2]] == BLACK_PAWN:
                     punktujCzarne(-POINTS_PAWN)
-                    punktujCzarne(-punktyI(krotka[1], [krotka[2], -gracz, gracz * graczK - 1))
-                elif plansza[krotka[1],[krotka[2]] == WHITE_QUENN:
+                    punktujCzarne(-punktyI(krotka[1], krotka[2], -gracz, gracz * graczK - 1))
+                elif plansza[krotka[1], krotka[2]] == WHITE_QUENN:
                     punktujBiale(-POINTS_QUENN)
-                    punktujBiale(-punktyI(krotka[1], [krotka[2], -gracz, gracz * graczK - 1))
+                    punktujBiale(-punktyI(krotka[1], krotka[2], -gracz, gracz * graczK - 1))
                 else:
                     punktujCzarne(-POINTS_QUENN)
-                    punktujCzarne(-punktyI(krotka[1], [krotka[2], -gracz, gracz * graczK - 1))
+                    punktujCzarne(-punktyI(krotka[1], krotka[2], -gracz, gracz * graczK - 1))
                 plansza[krotka[1]][krotka[2]] = EMPTY_FIELD
                 plansza[row_end][column_end] = figure
             else:
