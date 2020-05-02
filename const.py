@@ -16,7 +16,7 @@ if LINES_OF_PAWNS > SIZE / 2:           #Automatyczna poprawka ilości linii wyp
 plansza = [[EMPTY_FIELD for column in range(SIZE)] for row in range(SIZE)]
 
 gracz = 1  # 1 bialy || -1 czarny
-figury = [WHITE_PAWN, WHITE_QUENN, BLACK_QUENN, BLACK_PAWN]
+figury = [BLACK_QUENN, BLACK_PAWN, WHITE_QUENN, WHITE_PAWN]
 graczK = 0 # 0 bialy || -1 czarny
 
 # wtedy funkcje beda moglby byc pasujace do obu dzieki wspolczynnikowi. Mniej ifów.

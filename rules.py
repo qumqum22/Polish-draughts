@@ -43,13 +43,13 @@ def ruchGracza(od, do, gracz, graczK):
                 punktujBiale(-punktyI(between_row_points,between_column_points, -gracz, gracz*graczK - 1))
             elif plansza[between_row_points][between_column_points] == BLACK_PAWN:
                 punktujCzarne(-POINTS_PAWN)
-                punktujBiale(-punktyI(between_row_points,between_column_points, -gracz, gracz*graczK - 1))
+                punktujCzarne(-punktyI(between_row_points,between_column_points, -gracz, gracz*graczK - 1))
             elif plansza[between_row_points][between_column_points] == WHITE_QUENN:
                 punktujBiale(-POINTS_QUENN)
                 punktujBiale(-punktyI(between_row_points,between_column_points, -gracz, gracz*graczK - 1))
             else:
                 punktujCzarne(-POINTS_QUENN)
-                punktujBiale(-punktyI(between_row_points, between_column_points, -gracz, gracz * graczK - 1))
+                punktujCzarne(-punktyI(between_row_points, between_column_points, -gracz, gracz * graczK - 1))
             plansza[between_row_points][between_column_points] = EMPTY_FIELD
             plansza[row_end][column_end] = figure
         else:
@@ -60,6 +60,19 @@ def ruchGracza(od, do, gracz, graczK):
         if krotka[3]:
             if krotka[0]:
                 plansza[row_start][column_start] = EMPTY_FIELD
+                ''' Odejmowanie punktow przeciwnikowi od piona i od pozycji piona'''
+                if plansza[krotka[1],[krotka[2]] == WHITE_PAWN:
+                    punktujBiale(-POINTS_PAWN)
+                    punktujBiale(-punktyI(krotka[1], [krotka[2], -gracz, gracz * graczK - 1))
+                elif plansza[krotka[1],[krotka[2]] == BLACK_PAWN:
+                    punktujCzarne(-POINTS_PAWN)
+                    punktujCzarne(-punktyI(krotka[1], [krotka[2], -gracz, gracz * graczK - 1))
+                elif plansza[krotka[1],[krotka[2]] == WHITE_QUENN:
+                    punktujBiale(-POINTS_QUENN)
+                    punktujBiale(-punktyI(krotka[1], [krotka[2], -gracz, gracz * graczK - 1))
+                else:
+                    punktujCzarne(-POINTS_QUENN)
+                    punktujCzarne(-punktyI(krotka[1], [krotka[2], -gracz, gracz * graczK - 1))
                 plansza[krotka[1]][krotka[2]] = EMPTY_FIELD
                 plansza[row_end][column_end] = figure
             else:
@@ -81,42 +94,28 @@ def sprawdzRuchPionka(row_start, column_start, row_end, column_end, gracz):
             return False
 
 def sprawdzBiciePionka(row_start, column_start, row_end, column_end, gracz):
-    if gracz == -1:
-        if row_end - row_start == 2 and abs(column_start - column_end) == 2:
-            between_column_points = int((column_start + column_end) / 2)  # współrzędna kolumny pomiedzy skokiem
-            if plansza[row_end][column_end] == EMPTY_FIELD:
-                if plansza[row_start + 1][between_column_points] == WHITE_PAWN:
-                    return True  # ruch mozliwy gdy pionek bialy jest miedzy pionkiem czarnym a miejscem docelowym
-                elif plansza[row_start + 1][between_column_points] == WHITE_QUENN:
-                    return True  # ruch mozliwy gdy krolowa biala jest miedzy pionkiem czarnym a miejscem docelowym
-                else:
-                    return False
+    between_row_points = int((row_start + row_end) / 2)
+    between_column_points = int((column_start + column_end) / 2)
+    if abs(row_end - row_start) == 2 and abs(column_start - column_end) == 2:
+        if plansza[row_end][column_end] == EMPTY_FIELD:
+            if plansza[between_row_points][between_column_points] == figury[gracz]:
+                return True  # ruch mozliwy gdy pionek bialy jest miedzy pionkiem czarnym a miejscem docelowym
+            elif plansza[between_row_points][between_column_points] == figury[gracz-1]:
+                return True  # ruch mozliwy gdy krolowa biala jest miedzy pionkiem czarnym a miejscem docelowym
             else:
                 return False
         else:
             return False
     else:
-        if row_start - row_end == 2 and abs(column_start - column_end) == 2:
-            between_column_points = int((column_start + column_end) / 2)
-            if plansza[row_end][column_end] == EMPTY_FIELD:
-                if plansza[row_start - 1][between_column_points] == BLACK_PAWN:
-                    return True
-                elif plansza[row_start - 1][between_column_points] == BLACK_QUENN:
-                    return True
-                else:
-                    return False
-            else:
-                return False
-        else:
-            return False
+        return False
+
 
 def sprawdzRuchDamki(row_start, column_start, row_end, column_end, gracz):
     ''' Sprawdza ruch damki, zwraca liczbe pionków przeciwnika pomiedzy, pozycje x,y pionka przeciwnika oraz czy ruch mozliwy'''
     licznikPionow = 0
     row = row_end - row_start
     column = column_end - column_start
-    #row_step
-    #column_step
+
     if row > 0:
         row_step = 1
     else:
@@ -127,54 +126,32 @@ def sprawdzRuchDamki(row_start, column_start, row_end, column_end, gracz):
     else:
         column_step = -1
 
-    if gracz == -1:
-        if plansza[row_end][column_end] == EMPTY_FIELD and abs(row) == abs(column) and row != 0:
-            x_pawn = 0
-            y_pawn = 0
-            for i in range(abs(column_end - column_start)):
-                if plansza[row_start+row_step][column_start+column_step] == WHITE_PAWN:
-                    licznikPionow += 1
-                    x_pawn = row_start+row_step
-                    y_pawn = column_start + column_step
-                elif plansza[row_start+row_step][column_start+column_step] == WHITE_QUENN:
-                    licznikPionow += 1
-                    x_pawn = row_start+row_step
-                    y_pawn = column_start + column_step
-                elif plansza[row_start+row_step][column_start+column_step] == BLACK_PAWN or plansza[row_start+row_step][column_start+column_step] == BLACK_QUENN:
-                    return 0, 0, 0, False, "Nie mozesz skakac poprzez swoich"
-                if row_step*i > 0:
-                    row_step += 1
-                else:
-                    row_step -= 1
-                if column_step*1 > 0:
-                    column_step += 1
-                else:
-                    column_step -= 1
-            if licznikPionow < 2:
-                return licznikPionow, x_pawn, y_pawn, True
-    else:
-        if plansza[row_end][column_end] == EMPTY_FIELD and abs(row) == abs(column) and row != 0:
-            x_pawn = 0
-            y_pawn = 0
-            for i in range(abs(column_end - column_start)):
-                if plansza[row_start+row_step][column_start+column_step] == BLACK_PAWN:
-                    licznikPionow += 1
-                    x_pawn = row_start + row_step
-                    y_pawn = column_start + column_step
-                elif plansza[row_start+row_step][column_start+column_step] == BLACK_QUENN:
-                    licznikPionow += 1
-                    x_pawn = row_start + row_step
-                    y_pawn = column_start + column_step
-                elif plansza[row_start+row_step][column_start+column_step] == WHITE_PAWN or plansza[row_start+row_step][column_start+column_step] == WHITE_QUENN:
-                    return 0, 0, 0, False, "Nie mozesz skakac poprzez swoich"
-                if row_step*i > 0:
-                    row_step += 1
-                else:
-                    row_step -= 1
-                if column_step*1 > 0:
-                    column_step += 1
-                else:
-                    column_step -= 1
-            if licznikPionow < 2:
-                return licznikPionow, x_pawn, y_pawn, True
+    r_step = row_start + row_step
+    c_step = column_start + column_step
+
+    if plansza[row_end][column_end] == EMPTY_FIELD and abs(row) == abs(column) and row != 0:
+        x_pawn = 0
+        y_pawn = 0
+        for i in range(abs(column_end - column_start)):
+            if plansza[r_step][c_step] == figury[gracz]:
+                licznikPionow += 1
+                x_pawn = r_step
+                y_pawn = c_step
+            elif plansza[r_step][c_step] == figury[gracz-1]:
+                licznikPionow += 1
+                x_pawn = r_step
+                y_pawn = c_step
+            elif plansza[r_step][c_step] == figury[-gracz] or plansza[r_step][c_step] == figury[gracz+1]:
+                return 0, 0, 0, False, "Nie mozesz skakac poprzez swoich"
+            if row_step > 0:
+                row_step += 1
+            else:
+                row_step -= 1
+            if column_step > 0:
+                column_step += 1
+            else:
+                column_step -= 1
+        if licznikPionow < 2:
+            return licznikPionow, x_pawn, y_pawn, True
+
     return 0, 0, 0, False, "Blad ruchu"
