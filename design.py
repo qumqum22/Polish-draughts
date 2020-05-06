@@ -20,8 +20,8 @@ def runWindow():
 
     #plansza
     plansza_img = pygame.image.load("assets/board.jpg")
-    planszaX = WIDTH/2 - 320/2
-    planszaY = HEIGHT/2 - 320/2
+    planszaX = WIDTH/2 - BOARD/2
+    planszaY = HEIGHT/2 - BOARD/2
     #gracz
     white_pawn_img = pygame.image.load("assets/white_pawn_32px.png")
     black_pawn_img = pygame.image.load("assets/black_pawn_32px.png")
@@ -37,41 +37,21 @@ def runWindow():
                 running = False
                 #sys.exit(0)
 
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mx, my = pygame.mouse.get_pos()
+                print(mx, my)
+                mx -= planszaX
+                my -= planszaY
+                print(int(mx/32), int(my/32))
+
         screen.blit(plansza_img, (planszaX, planszaY))
 
         for i in range(10):
             for j in range(10):
                 if plansza[i][j] == WHITE_PAWN:
-                    screen.blit(white_pawn_img, (planszaX + j*32, planszaY + i * 32))
+                    screen.blit(white_pawn_img, (planszaX + j*BOARD/SIZE, planszaY + i * BOARD/SIZE))
                 elif plansza[i][j] == BLACK_PAWN:
-                    screen.blit(black_pawn_img, (planszaX + j*32, planszaY + i * 32))
+                    screen.blit(black_pawn_img, (planszaX + j*BOARD/SIZE, planszaY + i * BOARD/SIZE))
 
         pygame.display.update() # pokazanie gotowego rysunku gry
 
-'''
-Kazde pole oznacze od 1 do 100.
-		if mouse_pos[0] < 32 + planszaX:
-			row = 0
-		elif mouse_pos[0] < 64 + planszaX: 
-			row = 1
-		elif mouse_pos[0] < 96 + planszaX:
-			row = 2
-		elif mouse_pos[0] < 128 + planszaX:
-			row = 3 
-		elif mouse_pos[0] < 160 + planszaX:
-			row = 4
-	    elif mouse_pos[1] < 192 + planszaX:
-	        row = 5
-	    elif mouse_pos[1] < 224 + planszaX:
-	        row = 6
-	    elif mouse_pos[1] < 256 + planszaX:
-	        row = 7
-	    elif mouse_pos[1] < 288 + planszaX:
-	        row = 8
-	    elif mouse_pos[1] <= 320 + planszaX:
-	        row = 9
-	        tak samo z Y i uzyskamy miejsce od
-
-	        
-
-'''

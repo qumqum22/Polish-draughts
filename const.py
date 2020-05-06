@@ -1,6 +1,8 @@
 SIZE = 10              #Wielkość planszy
 WIDTH = 800             #Szerokość okna gry
 HEIGHT = 600            #Wysokość okna gry
+BOARD = 320             #Wielkosc planszy
+FIELD = BOARD/SIZE      #Wielkosc pola planszy
 LINES_OF_PAWNS = 4      #Ilość linii wypełnionych pionkami jednego gracza
 BLACK_PAWN = 'c'        #Oznaczenie czarnego pionka
 WHITE_PAWN = 'b'        #Oznaczenie białego pionka
