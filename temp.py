@@ -17,3 +17,9 @@ def translate(pozycja):
         row = int(pozycja[1])
         column = int(switch(pozycja[0]))
         return row, column
+
+def sprawdzPozycje(x, y):
+    if x > -1 and x < 10:
+        if y > -1 and y < 10:
+            return True
+    return False

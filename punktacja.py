@@ -46,13 +46,12 @@ def punktujCzarne(ile):
     czarne += ile
 
 
-def punkty(pozycja, gracz, graczK):
-    x, y = translate(pozycja)
-    wynik = punktacja[gracz*x+graczK][gracz*y+graczK] # dla bialego [x][y], # czarny [-x-1][y]
+def punkty(x, y, gracz, graczK):
+    wynik = punktacja[gracz*x+graczK][gracz*y+graczK]   # dla bialego [x][y], # czarny [-x-1][y]
     return wynik
 
 def punktyI(x, y, gracz, graczK):
-    wynik = punktacja[gracz*x+graczK][y] # dla bialego [x][y], # czarny [-x-1][y]
+    wynik = punktacja[gracz*x+graczK][y]    # dla bialego [x][y], # czarny [-x-1][y]
     return wynik
 
 def punktyStart():
@@ -62,10 +61,10 @@ def punktyStart():
         for j in range(SIZE):
             if plansza[i][j] == WHITE_PAWN:
                 biale += POINTS_PAWN
-                biale += punktyI(i,j, 1, 0)
+                biale += punktyI(i, j, 1, 0)
             elif plansza[i][j] == WHITE_QUENN:
                 biale += POINTS_QUENN
-                biale += punktyI(i,j, 1, 0)
+                biale += punktyI(i, j, 1, 0)
             elif plansza[i][j] == BLACK_PAWN:
                 czarne += POINTS_PAWN
                 czarne += punktyI(i, j, -1, -1)
@@ -76,15 +75,15 @@ def punktyStart():
     print(f'Punkty czarnego: {czarne}')
 
 
-def punktyUpdate(od, do, gracz, graczK):
+def punktyUpdate(row_start, column_start, row_end, column_end, gracz, graczK):
     ''' Funkcja uaktualnia sume punktow gracza co ruch'''
     global biale
     global czarne
     if gracz == 1:
-        biale = biale + punkty(do, gracz, graczK) - punkty(od, gracz, graczK)
+        biale = biale + punkty(row_end, column_end, gracz, graczK) - punkty(row_start, column_start, gracz, graczK)
         print(f'Wynik bialego:{biale}')
         print(f'Wynik czarnego:{czarne}')
     else:
-        czarne = czarne + punkty(do, gracz, graczK) - punkty(od, gracz, graczK)
+        czarne = czarne + punkty(row_end, column_end, gracz, graczK) - punkty(row_start, column_start, gracz, graczK)
         print(f'Wynik bialego:{biale}')
         print(f'Wynik czarnego:{czarne}')
