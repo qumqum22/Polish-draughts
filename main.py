@@ -1,9 +1,9 @@
-import time
-#from const import *
-from design import *
+
+#from design import *
+
 from board import *
-from rules import *
 from punktacja import *
+import design
 
 def rozgrywka():
     #global gracz
@@ -12,7 +12,7 @@ def rozgrywka():
     ukladPoczatkowy()
     wyswietl()
     punktyStart()
-    runWindow()
+    design.runWindow()
 
 
 rozgrywka()

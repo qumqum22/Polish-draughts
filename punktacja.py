@@ -57,6 +57,8 @@ def punktyI(x, y, gracz, graczK):
 def punktyStart():
     global biale
     global czarne
+    biale = 0
+    czarne = 0
     for i in range(SIZE):
         for j in range(SIZE):
             if plansza[i][j] == WHITE_PAWN:

@@ -1,5 +1,12 @@
 from const import *
 from punktacja import *
+
+biale_piony = []
+biale_damki = []
+czarne_piony = []
+czarne_damki = []
+
+
 def wyswietl():
     ''' Funkcja wyswietla aktualny stan gry '''
     for i in range(SIZE):
@@ -8,8 +15,14 @@ def wyswietl():
 
     print("\n\t   a    b    c    d    e    f    g    h    i    j \n")
 
+def ukladCzyszczenie():
+    for row in range(0, SIZE, 1):
+        for column in range(0, SIZE, 1):
+            plansza[row][column] = EMPTY_FIELD
+
 def ukladPoczatkowy():
     ''' Funkcja inicjalizuje plansze pionkami '''
+
     for row in range(0, LINES_OF_PAWNS, 1):
         if row % 2:
             for column in range(0, SIZE, 2):
@@ -25,6 +38,18 @@ def ukladPoczatkowy():
         else:
             for column in range(1, SIZE, 2):
                 plansza[row][column] = WHITE_PAWN
+
+
+    for row in range(SIZE):
+        for column in range(SIZE):
+            if plansza[row][column] == WHITE_PAWN:
+                biale_piony.append((row, column))
+            elif plansza[row][column] == WHITE_QUENN:
+                biale_damki.append((row, column))
+            elif plansza[row][column] == BLACK_PAWN:
+                czarne_piony.append((row, column))
+            elif plansza[row][column] == BLACK_QUENN:
+                czarne_damki.append((row, column))
     #plansza[1][0] = WHITE_PAWN
     #plansza[0][1] = EMPTY_FIELD
 

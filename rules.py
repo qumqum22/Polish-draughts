@@ -1,7 +1,7 @@
 from const import *
 from temp import *
 from punktacja import *
-from board import wyniesienie
+import board
 #Bicia są obowiązkowe. Kiedy istnieje kilka możliwych bić, gracz musi wykonać maksymalne
 # (tzn. takie, w którym zbije największą liczbę pionów lub damek przeciwnika).
 # Jeżeli gracz ma dwie lub więcej możliwości bicia takiej samej ilości bierek
@@ -10,6 +10,20 @@ from board import wyniesienie
 
 #Podczas bicia nie można przeskakiwać więcej niż jeden raz przez tę samą bierkę.
 # Bierki usuwa się z planszy po wykonaniu bicia.
+
+mozliwe_ruchy_biale = []
+mozliwe_ruchy_czarne = []
+
+mozliwe_bicia_biale = []
+mozliwe_bicia_czarne = []
+
+
+def pionRuch(row_start, column_start, gracz, graczK):
+    pass    # czy pion moze sie ruszyc. Biale w gore, czarne w dół
+
+def pionBicie(row_start, column_start, gracz, graczK):
+    pass
+
 
 def ruchGracza(row_start, column_start, row_end, column_end, gracz, graczK):
     #row_start, column_start = translate(od)
@@ -84,7 +98,7 @@ def ruchGracza(row_start, column_start, row_end, column_end, gracz, graczK):
                 print(krotka[4])
                 return False
 
-        wyniesienie(row_end, column_end, gracz)
+        board.wyniesienie(row_end, column_end, gracz)
         punktyUpdate(row_start, column_start, row_end, column_end, gracz, graczK)
         return True
     else:
