@@ -101,7 +101,6 @@ def runWindow():
                         gracz *= -1
                         graczK = -graczK - 1
                         wyswietl()
-
                 gracz *= -1
                 graczK = -graczK - 1
                 wyswietl()

@@ -39,7 +39,18 @@ def ukladPoczatkowy():
             for column in range(1, SIZE, 2):
                 plansza[row][column] = WHITE_PAWN
 
+def czytajFigury():
+    global biale_piony
+    global biale_damki
 
+    global czarne_piony
+    global czarne_damki
+
+    biale_piony.clear
+    biale_damki.clear
+
+    czarne_piony.clear
+    czarne_damki.clear
     for row in range(SIZE):
         for column in range(SIZE):
             if plansza[row][column] == WHITE_PAWN:
@@ -50,10 +61,6 @@ def ukladPoczatkowy():
                 czarne_piony.append((row, column))
             elif plansza[row][column] == BLACK_QUENN:
                 czarne_damki.append((row, column))
-    #plansza[1][0] = WHITE_PAWN
-    #plansza[0][1] = EMPTY_FIELD
-
-
 
 def wyniesienie(x, y, gracz):
     global biale
@@ -74,6 +81,3 @@ def wyniesienie(x, y, gracz):
     #przy czym jeśli znajdzie się tam w wyniku bicia i będzie mógł wykonać
     #kolejne bicie (do tyłu), to będzie musiał je wykonać i
     # nie staje się wtedy damką (pozostaje pionkiem).
-
-# Stworzyc liste przechowywujaca wszystkie pionki gracza
-# Umozliwi sprawdzenie czy ma dostepne bicia
