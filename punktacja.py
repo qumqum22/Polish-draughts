@@ -1,4 +1,3 @@
-from temp import *
 from const import *
 
 biale = 0
@@ -49,6 +48,7 @@ def punktujCzarne(ile):
 def punkty(x, y, gracz, graczK):
     wynik = punktacja[gracz*x+graczK][gracz*y+graczK]   # dla bialego [x][y], # czarny [-x-1][y]
     return wynik
+
 
 def punktyI(x, y, gracz, graczK):
     wynik = punktacja[gracz*x+graczK][y]    # dla bialego [x][y], # czarny [-x-1][y]

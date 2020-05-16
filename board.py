@@ -3,6 +3,7 @@ from punktacja import *
 
 biale_piony = []
 biale_damki = []
+
 czarne_piony = []
 czarne_damki = []
 
@@ -46,11 +47,11 @@ def czytajFigury():
     global czarne_piony
     global czarne_damki
 
-    biale_piony.clear
-    biale_damki.clear
+    biale_piony.clear()
+    biale_damki.clear()
 
-    czarne_piony.clear
-    czarne_damki.clear
+    czarne_piony.clear()
+    czarne_damki.clear()
     for row in range(SIZE):
         for column in range(SIZE):
             if plansza[row][column] == WHITE_PAWN:

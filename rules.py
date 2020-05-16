@@ -1,8 +1,7 @@
 from const import *
-from temp import *
 from punktacja import *
-import board
-import nakazy
+from nakazy import *
+
 #Bicia są obowiązkowe. Kiedy istnieje kilka możliwych bić, gracz musi wykonać maksymalne
 # (tzn. takie, w którym zbije największą liczbę pionów lub damek przeciwnika).
 # Jeżeli gracz ma dwie lub więcej możliwości bicia takiej samej ilości bierek
@@ -12,56 +11,67 @@ import nakazy
 #Podczas bicia nie można przeskakiwać więcej niż jeden raz przez tę samą bierkę.
 # Bierki usuwa się z planszy po wykonaniu bicia.
 
+def sprawdzPozycje(x, y):
+    if x > -1 and x < 10:
+        if y > -1 and y < 10:
+            return True
+    return False
+
 def ruchGracza(row_start, column_start, row_end, column_end, gracz, graczK):
-    #row_start, column_start = translate(od)
-    #row_end, column_end = translate(do)
+    ruch = (row_start, column_start, row_end, column_end)
     if sprawdzPozycje(row_start, column_start) and sprawdzPozycje(row_end, column_end):
         between_row_points = int((row_start + row_end) / 2)
         between_column_points = int((column_start + column_end) / 2)
-        if gracz == 1 and plansza[row_start][column_start] == WHITE_PAWN:
-            figure = WHITE_PAWN
+
+        '''             Zapisywanie jaką figurą wykonuje ruch          '''
+        if plansza[row_start][column_start] == figury[-gracz]:
+            figure = figury[-gracz]
             pion = 1
-        elif gracz == -1 and plansza[row_start][column_start] == BLACK_PAWN:
-            figure = BLACK_PAWN
-            pion = 1
-        elif gracz == 1 and plansza[row_start][column_start] == WHITE_QUENN:
-            figure = WHITE_QUENN
+
+        elif plansza[row_start][column_start] == figury[-gracz - 1]:
+            figure = figury[-gracz - 1]
             pion = 0
-        elif gracz == -1 and plansza[row_start][column_start] == BLACK_QUENN:
-            figure = BLACK_QUENN
-            pion = 0
+
         else:
             print("Ruch niedozwolonyyy")
             return False
-        if pion:
-            if sprawdzRuchPionka(row_start, column_start, row_end, column_end, gracz):
-                plansza[row_start][column_start] = EMPTY_FIELD
-                plansza[row_end][column_end] = figure
-            elif sprawdzBiciePionka(row_start, column_start, row_end, column_end, gracz):
-                plansza[row_start][column_start] = EMPTY_FIELD
-                ''' Odejmowanie punktow przeciwnikowi od piona i od pozycji piona'''
-                if plansza[between_row_points][between_column_points] == WHITE_PAWN:
-                    punktujBiale(-POINTS_PAWN)
-                    punktujBiale(-punktyI(between_row_points,between_column_points, -gracz, gracz*graczK - 1))
-                elif plansza[between_row_points][between_column_points] == BLACK_PAWN:
-                    punktujCzarne(-POINTS_PAWN)
-                    punktujCzarne(-punktyI(between_row_points,between_column_points, -gracz, gracz*graczK - 1))
-                elif plansza[between_row_points][between_column_points] == WHITE_QUENN:
-                    punktujBiale(-POINTS_QUENN)
-                    punktujBiale(-punktyI(between_row_points,between_column_points, -gracz, gracz*graczK - 1))
+
+        if pion:                        # Prawda gdy figura to pionek
+            '''     OBSLUGA PIONKA      '''
+            if len(pawnHit(gracz)):         # jesli istnieja bicia, musze je wykonac
+                if ruch in pawnHit(gracz):      # jesli ruch to bicie, to bij, jesli nie, zwracaj błąd
+                    plansza[row_start][column_start] = EMPTY_FIELD
+                    ''' Odejmowanie punktow przeciwnikowi od piona i od pozycji piona'''
+                    if plansza[between_row_points][between_column_points] == WHITE_PAWN:
+                        punktujBiale(-POINTS_PAWN)
+                        punktujBiale(-punktyI(between_row_points,between_column_points, -gracz, gracz*graczK - 1))
+                    elif plansza[between_row_points][between_column_points] == BLACK_PAWN:
+                        punktujCzarne(-POINTS_PAWN)
+                        punktujCzarne(-punktyI(between_row_points,between_column_points, -gracz, gracz*graczK - 1))
+                    elif plansza[between_row_points][between_column_points] == WHITE_QUENN:
+                        punktujBiale(-POINTS_QUENN)
+                        punktujBiale(-punktyI(between_row_points,between_column_points, -gracz, gracz*graczK - 1))
+                    else:
+                        punktujCzarne(-POINTS_QUENN)
+                        punktujCzarne(-punktyI(between_row_points, between_column_points, -gracz, gracz * graczK - 1))
+                    plansza[between_row_points][between_column_points] = EMPTY_FIELD
+                    plansza[row_end][column_end] = figure
                 else:
-                    punktujCzarne(-POINTS_QUENN)
-                    punktujCzarne(-punktyI(between_row_points, between_column_points, -gracz, gracz * graczK - 1))
-                plansza[between_row_points][between_column_points] = EMPTY_FIELD
+                    return False
+
+            elif ruch in pawnMove(gracz):       # jeśli ruch znajduje sie w przesunieciu pionka, to przesun
+                plansza[row_start][column_start] = EMPTY_FIELD
                 plansza[row_end][column_end] = figure
-            else:
+
+            else:                               # w przeciwnym razie nieprawidlowy ruch
                 print("Ruch niedozwolony")
                 return False
         else:
+            '''     OBSLUGA DAMKI      '''
             krotka = sprawdzRuchDamki(row_start, column_start, row_end, column_end, gracz)
 
-            if krotka[3]:
-                if krotka[0] == 1:
+            if krotka[3]:           # Prawda/fałsz  ruch prawidłowy / ruch nieprawidłowy
+                if krotka[0] == 1:      # Prawda/ fałsz     Bicie / zwykly ruch
                     plansza[row_start][column_start] = EMPTY_FIELD
                     ''' Odejmowanie punktow przeciwnikowi od piona i od pozycji piona'''
                     if plansza[krotka[1]][krotka[2]] == WHITE_PAWN:
@@ -92,21 +102,17 @@ def ruchGracza(row_start, column_start, row_end, column_end, gracz, graczK):
         print("niepoprawne dane")
         return False
 
-def sprawdzRuchPionka(row_start, column_start, row_end, column_end, gracz):
-        if ((row_start - row_end)*gracz == 1) and (abs(column_start - column_end) == 1) and plansza[row_end][column_end] == EMPTY_FIELD:
-            return True # bialy:  ruch mozliwy o 1 jesli idzie na ukos o 1 i pole przed nim jest puste
-        else:
-            return False
-
 def sprawdzBiciePionka(row_start, column_start, row_end, column_end, gracz):
+    if not sprawdzPozycje(row_end, column_end):
+        return False
     between_row_points = int((row_start + row_end) / 2)
     between_column_points = int((column_start + column_end) / 2)
     if abs(row_end - row_start) == 2 and abs(column_start - column_end) == 2:
         if plansza[row_end][column_end] == EMPTY_FIELD:
             if plansza[between_row_points][between_column_points] == figury[gracz]:
-                return True  # ruch mozliwy gdy pionek bialy jest miedzy pionkiem czarnym a miejscem docelowym
+                return True
             elif plansza[between_row_points][between_column_points] == figury[gracz-1]:
-                return True  # ruch mozliwy gdy krolowa biala jest miedzy pionkiem czarnym a miejscem docelowym
+                return True
             else:
                 return False
         else:
@@ -118,6 +124,9 @@ def sprawdzBiciePionka(row_start, column_start, row_end, column_end, gracz):
 def sprawdzRuchDamki(row_start, column_start, row_end, column_end, gracz):
     ''' Sprawdza ruch damki, zwraca liczbe pionków przeciwnika pomiedzy,
     pozycje x,y pionka przeciwnika oraz czy ruch mozliwy'''
+    if not sprawdzPozycje(row_end, column_end):
+        return 0, 0, 0, False, "Niepoprawny cel"
+
     licznikPionow = 0
     row = row_end - row_start
     column = column_end - column_start
