@@ -12,6 +12,7 @@ from nakazy import *
 # Bierki usuwa się z planszy po wykonaniu bicia.
 
 def sprawdzPozycje(x, y):
+    ''' Checking if (x, y) coordinates are correct '''
     if x > -1 and x < 10:
         if y > -1 and y < 10:
             return True
@@ -56,6 +57,10 @@ def ruchGracza(row_start, column_start, row_end, column_end, gracz, graczK):
                         punktujCzarne(-punktyI(between_row_points, between_column_points, -gracz, gracz * graczK - 1))
                     plansza[between_row_points][between_column_points] = EMPTY_FIELD
                     plansza[row_end][column_end] = figure
+                    punktyUpdate(row_start, column_start, row_end, column_end, gracz, graczK)
+                    ###
+                    board.wyniesienie(row_end, column_end, gracz)
+                    return True
                 else:
                     return False
 
@@ -101,6 +106,9 @@ def ruchGracza(row_start, column_start, row_end, column_end, gracz, graczK):
     else:
         print("niepoprawne dane")
         return False
+
+
+
 
 def sprawdzBiciePionka(row_start, column_start, row_end, column_end, gracz):
     if not sprawdzPozycje(row_end, column_end):

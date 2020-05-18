@@ -41,42 +41,39 @@ def pawnHit(gracz):
     ''' Funkcja wykrywa mozliwe bicia'''
     board.czytajFigury()
 
-    pion_mozliwe_bicia_biale = []
-    pion_mozliwe_bicia_czarne = []
-
-    pion_mozliwe_bicia_biale.clear()
-    pion_mozliwe_bicia_czarne.clear()
+    pion_mozliwe_bicia = []
+    pion_mozliwe_bicia.clear()
 
     if gracz == 1:
         for pionek in board.biale_piony:
             if rules.sprawdzBiciePionka(pionek[0], pionek[1], pionek[0]+2, pionek[1]+2, gracz):
-                pion_mozliwe_bicia_biale.append((pionek[0], pionek[1], pionek[0] + 2, pionek[1] + 2))
+                pion_mozliwe_bicia.append((pionek[0], pionek[1], pionek[0] + 2, pionek[1] + 2))
 
             if rules.sprawdzBiciePionka(pionek[0], pionek[1], pionek[0] + 2, pionek[1] - 2, gracz):
-                pion_mozliwe_bicia_biale.append((pionek[0], pionek[1], pionek[0] + 2, pionek[1] - 2))
+                pion_mozliwe_bicia.append((pionek[0], pionek[1], pionek[0] + 2, pionek[1] - 2))
 
             if rules.sprawdzBiciePionka(pionek[0], pionek[1], pionek[0] - 2, pionek[1] - 2, gracz):
-                pion_mozliwe_bicia_biale.append((pionek[0], pionek[1], pionek[0] - 2, pionek[1] - 2))
+                pion_mozliwe_bicia.append((pionek[0], pionek[1], pionek[0] - 2, pionek[1] - 2))
 
             if rules.sprawdzBiciePionka(pionek[0], pionek[1], pionek[0] - 2, pionek[1] + 2, gracz):
-                pion_mozliwe_bicia_biale.append((pionek[0], pionek[1], pionek[0] - 2, pionek[1] + 2))
-        return pion_mozliwe_bicia_biale
+                pion_mozliwe_bicia.append((pionek[0], pionek[1], pionek[0] - 2, pionek[1] + 2))
+        return pion_mozliwe_bicia
 
     else:
         for pionek in board.czarne_piony:
             if rules.sprawdzBiciePionka(pionek[0], pionek[1], pionek[0] + 2, pionek[1] + 2, gracz):
-                pion_mozliwe_bicia_czarne.append((pionek[0], pionek[1], pionek[0] + 2, pionek[1] + 2))
+                pion_mozliwe_bicia.append((pionek[0], pionek[1], pionek[0] + 2, pionek[1] + 2))
 
             if rules.sprawdzBiciePionka(pionek[0], pionek[1], pionek[0] + 2, pionek[1] - 2, gracz):
-                pion_mozliwe_bicia_czarne.append((pionek[0], pionek[1], pionek[0] + 2, pionek[1] - 2))
+                pion_mozliwe_bicia.append((pionek[0], pionek[1], pionek[0] + 2, pionek[1] - 2))
 
             if rules.sprawdzBiciePionka(pionek[0], pionek[1], pionek[0] - 2, pionek[1] - 2, gracz):
-                pion_mozliwe_bicia_czarne.append((pionek[0], pionek[1], pionek[0] - 2, pionek[1] - 2))
+                pion_mozliwe_bicia.append((pionek[0], pionek[1], pionek[0] - 2, pionek[1] - 2))
 
             if rules.sprawdzBiciePionka(pionek[0], pionek[1], pionek[0] - 2, pionek[1] + 2, gracz):
-                pion_mozliwe_bicia_czarne.append((pionek[0], pionek[1], pionek[0] - 2, pionek[1] + 2))
+                pion_mozliwe_bicia.append((pionek[0], pionek[1], pionek[0] - 2, pionek[1] + 2))
 
-        return pion_mozliwe_bicia_czarne
+        return pion_mozliwe_bicia
 
 
 def quennMove(row_start, column_start, gracz):
