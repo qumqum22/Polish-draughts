@@ -78,7 +78,23 @@ def wyniesienie(x, y, gracz):
             return True
     return False
 
-     #Pionek, który dojdzie do ostatniego rzędu planszy, staje się damką,
-    #przy czym jeśli znajdzie się tam w wyniku bicia i będzie mógł wykonać
-    #kolejne bicie (do tyłu), to będzie musiał je wykonać i
-    # nie staje się wtedy damką (pozostaje pionkiem).
+def test_1():
+    plansza[6][3] = BLACK_PAWN
+    plansza[5][4] = WHITE_PAWN
+    plansza[5][6] = WHITE_PAWN
+    plansza[7][4] = WHITE_PAWN
+    plansza[7][6] = WHITE_PAWN
+
+    plansza[5][2] = WHITE_PAWN
+    plansza[2][1] = BLACK_PAWN
+    plansza[2][3] = BLACK_PAWN
+    plansza[4][3] = BLACK_PAWN
+    plansza[4][1] = BLACK_PAWN
+
+def test_2():
+    plansza[1][2] = WHITE_PAWN
+    plansza[8][7] = BLACK_PAWN
+
+def test_3():
+    plansza[5][6] = BLACK_QUENN
+    plansza[6][5] = WHITE_PAWN

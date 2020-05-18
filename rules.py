@@ -13,8 +13,8 @@ from nakazy import *
 
 def sprawdzPozycje(x, y):
     ''' Checking if (x, y) coordinates are correct '''
-    if x > -1 and x < 10:
-        if y > -1 and y < 10:
+    if x > -1 and x < SIZE:
+        if y > -1 and y < SIZE:
             return True
     return False
 
