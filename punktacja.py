@@ -1,91 +1,78 @@
-from const import *
+""" Module with players points logic. """
+import const as c
 
-biale = 0
-czarne = 0
-punktacja = [[0 for column in range(SIZE)] for row in range(SIZE)]
+
 
 def punktuj():
-    srodek_l = SIZE/2-2
-    srodek_p = SIZE/2+1
-    for a in range(SIZE):
-        for b in range(SIZE):
-            ''' PUNKTOWANIE ZA OKRAG'''
-            if (a == 0 or a == SIZE-1) or (b == 0 or b == SIZE-1):
-                punktacja[a][b] += 60
-            elif (srodek_l <= a <= srodek_p) and (srodek_l <= b <= srodek_p):
-                punktacja[a][b] += 20
+    """ Initializing the board with points. """
+    srodek_l = c.SIZE/2-2
+    srodek_p = c.SIZE/2+1
+    for x_coord in range(c.SIZE):
+        for y_coord in range(c.SIZE):
+            #PUNKTOWANIE ZA OKRAG
+            if x_coord in (0, c.SIZE - 1) or y_coord in (0, c.SIZE - 1):
+                c.punktacja[x_coord][y_coord] += 6
+            elif (srodek_l <= x_coord <= srodek_p) and (srodek_l <= y_coord <= srodek_p):
+                c.punktacja[x_coord][y_coord] += 2
             else:
-                punktacja[a][b] += 40
-            ''' PUNKTOWANIE ZA LINIE'''
-            if a < SIZE/5:
-                punktacja[a][b] += 50
-            elif a < 2*SIZE/5:
-                punktacja[a][b] += 40
-            elif a < 3*SIZE/5:
-                punktacja[a][b] += 30
-            elif a < 4*SIZE/5:
-                punktacja[a][b] += 20
+                c.punktacja[x_coord][y_coord] += 4
+            #PUNKTOWANIE ZA LINIE
+            if x_coord < c.SIZE/5:
+                c.punktacja[x_coord][y_coord] += 5
+            elif x_coord < 2*c.SIZE/5:
+                c.punktacja[x_coord][y_coord] += 4
+            elif x_coord < 3*c.SIZE/5:
+                c.punktacja[x_coord][y_coord] += 3
+            elif x_coord < 4*c.SIZE/5:
+                c.punktacja[x_coord][y_coord] += 2
             else:
-                punktacja[a][b] += 10
+                c.punktacja[x_coord][y_coord] += 1
 
 punktuj()
 
-def wyswietlpunktacje():
-    for i in range(SIZE):
-        print(i, "\t", punktacja[i])
+def wyswietl_punktacje():
+    """ Showing x_coord board of points. """
+    for i in range(c.SIZE):
+        print(i, "\t", c.punktacja[i])
     print()
 
-def punktujBiale(ile):
-    global biale
-    biale += ile
-
-
-def punktujCzarne(ile):
-    global czarne
-    czarne += ile
-
-
-def punkty(x, y, gracz, graczK):
-    wynik = punktacja[gracz*x+graczK][gracz*y+graczK]   # dla bialego [x][y], # czarny [-x-1][y]
+def punkty_planszy(x_coord, y_coord, gracz, gracz_k):
+    """ Returns points of position for player."""
+    wynik = c.punktacja[gracz*x_coord+gracz_k][y_coord]    # dla bialego [x][y], # czarny [-x-1][y]
     return wynik
 
-
-def punktyI(x, y, gracz, graczK):
-    wynik = punktacja[gracz*x+graczK][y]    # dla bialego [x][y], # czarny [-x-1][y]
-    return wynik
-
-def punktyStart():
-    global biale
-    global czarne
-    biale = 0
-    czarne = 0
-    for i in range(SIZE):
-        for j in range(SIZE):
-            if plansza[i][j] == WHITE_PAWN:
-                biale += POINTS_PAWN
-                biale += punktyI(i, j, 1, 0)
-            elif plansza[i][j] == WHITE_QUENN:
-                biale += POINTS_QUENN
-                biale += punktyI(i, j, 1, 0)
-            elif plansza[i][j] == BLACK_PAWN:
-                czarne += POINTS_PAWN
-                czarne += punktyI(i, j, -1, -1)
-            elif plansza[i][j] == BLACK_QUENN:
-                czarne += POINTS_QUENN
-                czarne += punktyI(i, j, -1, -1)
-    print(f'Punkty bialego: {biale}')
-    print(f'Punkty czarnego: {czarne}')
+def punkty_start():
+    """     Funkcja inicjalizuje punkty poczatkowe graczy   """
+    c.biale = 0
+    c.czarne = 0
+    for i in range(c.SIZE):
+        for j in range(c.SIZE):
+            if c.plansza[i][j] == c.WHITE_PAWN:
+                c.biale += c.POINTS_PAWN
+                c.biale += punkty_planszy(i, j, 1, 0)
+            elif c.plansza[i][j] == c.WHITE_QUENN:
+                c.biale += c.POINTS_QUENN
+                c.biale += punkty_planszy(i, j, 1, 0)
+            elif c.plansza[i][j] == c.BLACK_PAWN:
+                c.czarne += c.POINTS_PAWN
+                c.czarne += punkty_planszy(i, j, -1, -1)
+            elif c.plansza[i][j] == c.BLACK_QUENN:
+                c.czarne += c.POINTS_QUENN
+                c.czarne += punkty_planszy(i, j, -1, -1)
+    print(f'Punkty bialego: {c.biale}')
+    print(f'Punkty czarnego: {c.czarne}')
 
 
-def punktyUpdate(row_start, column_start, row_end, column_end, gracz, graczK):
-    ''' Funkcja uaktualnia sume punktow gracza co ruch'''
-    global biale
-    global czarne
+def punkty_update(row_start, column_start, row_end, column_end, gracz, gracz_k):
+    """ Funkcja uaktualnia sume punktow gracza co ruch"""
+
+    nowa_pozycja = punkty_planszy(row_end, column_end, gracz, gracz_k)
+    stara_pozycja = punkty_planszy(row_start, column_start, gracz, gracz_k)
     if gracz == 1:
-        biale = biale + punkty(row_end, column_end, gracz, graczK) - punkty(row_start, column_start, gracz, graczK)
-        print(f'Wynik bialego:{biale}')
-        print(f'Wynik czarnego:{czarne}')
+        c.biale += nowa_pozycja - stara_pozycja
+        print(f'Wynik bialego:{c.biale}')
+        print(f'Wynik czarnego:{c.czarne}')
     else:
-        czarne = czarne + punkty(row_end, column_end, gracz, graczK) - punkty(row_start, column_start, gracz, graczK)
-        print(f'Wynik bialego:{biale}')
-        print(f'Wynik czarnego:{czarne}')
+        c.czarne += nowa_pozycja - stara_pozycja
+        print(f'Wynik bialego:{c.biale}')
+        print(f'Wynik czarnego:{c.czarne}')

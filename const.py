@@ -1,7 +1,11 @@
+"""Module with const values. """
+
 SIZE = 10              #Wielkość planszy
 WIDTH = 800             #Szerokość okna gry
 HEIGHT = 600            #Wysokość okna gry
 BOARD = 320             #Wielkosc planszy
+PLANSZA_X = WIDTH / 2 - BOARD / 2
+PLANSZA_Y = HEIGHT / 2 - BOARD / 2
 FIELD = BOARD/SIZE      #Wielkosc pola planszy
 LINES_OF_PAWNS = 4      #Ilość linii wypełnionych pionkami jednego gracza
 BLACK_PAWN = 'c'        #Oznaczenie czarnego pionka
@@ -9,16 +13,32 @@ WHITE_PAWN = 'b'        #Oznaczenie białego pionka
 BLACK_QUENN = 'C'       #Oznaczenie czarnej królowej
 WHITE_QUENN = 'B'       #Oznaczenie białej królowej
 EMPTY_FIELD = ' '       #Oznaczenie pustego pola
-POINTS_PAWN = 10
-POINTS_QUENN = 100
+POINTS_PAWN = 1
+POINTS_QUENN = 10
+
+#Kolory
+RED = (255, 0, 0)
+LIME = (0, 255, 0)
+BLUE = (0, 0, 255)
+GRAY = (128, 128, 128)
+
 if LINES_OF_PAWNS > SIZE / 2:           #Automatyczna poprawka ilości linii wypełnionych pionkami
-    LINES_OF_PAWNS = int(SIZE / 2) - 1  #Na wypadek podania zbyt dużej liczby linii pionków jednego gracza
+    LINES_OF_PAWNS = int(SIZE / 2) - 1  #Na wypadek przepelnienia linii pionków jednego gracza
 
 ''' ZMIENNE '''
-plansza = [[EMPTY_FIELD for column in range(SIZE)] for row in range(SIZE)]
 
+#Klasa na zmienne globalne , nazwa klasy : Gra
+plansza = [[EMPTY_FIELD for column in range(SIZE)] for row in range(SIZE)]
 gracz = 1  # 1 bialy || -1 czarny
 figury = [BLACK_QUENN, BLACK_PAWN, WHITE_QUENN, WHITE_PAWN]
-graczK = 0 # 0 bialy || -1 czarny
+gracz_k = 0  # 0 bialy || -1 czarny
 
-# wtedy funkcje beda moglby byc pasujace do obu dzieki wspolczynnikowi. Mniej ifów.
+biale_piony = []
+biale_damki = []
+
+czarne_piony = []
+czarne_damki = []
+
+biale = 0
+czarne = 0
+punktacja = [[0 for column in range(SIZE)] for row in range(SIZE)]

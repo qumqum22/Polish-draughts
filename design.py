@@ -1,17 +1,20 @@
-from const import *
-from board import *
-import pygame, sys
-from rules import ruchGracza
-import time
-from Button import *
+""" Module of design. """
+import pygame
+
+import const as c
+import board
+import rules
+import Button as button
 import punktacja as pkt
+
+
 # rozpoczecie programu
 pygame.init()
 
 # stworzenie ekranu gry
 # size = pygame.display.get_window_size # nie dziala ;(
 
-screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
+screen = pygame.display.set_mode((c.WIDTH, c.HEIGHT), pygame.RESIZABLE)
 
 # nazwa gry
 pygame.display.set_caption("szachy stupolowe", "szachy stupolowe")
@@ -20,10 +23,10 @@ pygame.display.set_caption("szachy stupolowe", "szachy stupolowe")
 icon = pygame.image.load("assets/icon_32px.png")
 pygame.display.set_icon(icon)
 
+
 # plansza
 plansza_img = pygame.image.load("assets/board.jpg")
-planszaX = WIDTH / 2 - BOARD / 2
-planszaY = HEIGHT / 2 - BOARD / 2
+
 
 # gracz
 white_pawn_img = pygame.image.load("assets/white_pawn_32px.png")
@@ -33,155 +36,162 @@ black_quenn_img = pygame.image.load("assets/black_quenn_32px.png")
 
 # Tekst ruchu
 font = pygame.font.Font('freesansbold.ttf', 32)
-textX = WIDTH / 2 - BOARD / 2
-textY = HEIGHT / 2 - BOARD / 2 - 32
+textX = c.WIDTH / 2 - c.BOARD / 2
+textY = c.HEIGHT / 2 - c.BOARD / 2 - c.FIELD
 
-restartButton = Button((0, 255, 0), planszaX + BOARD + BOARD / SIZE + 2, planszaY + 2, 100, 50, "Restart")
-test_bicieButton = Button((255, 0, 0), WIDTH / 100, HEIGHT / 100, 150, 50, "Test bicia")
-test_wyniesienieButton = Button((255, 0, 0), WIDTH / 100, 2 * HEIGHT / 100 + 50, 150, 50, "Test wyniesienia")
-test_wygranaButton = Button((255, 0, 0), WIDTH / 100, 3 * HEIGHT / 100 + 100, 150, 50, "Test wygranej")
+#Tworzenie przyciskow
+restart_button = button.Button(c.LIME, c.PLANSZA_X+c.BOARD + c.BOARD/c.SIZE+2, c.PLANSZA_Y+2,
+                               100, 50, "Restart")
+test_bicie_button = button.Button(c.LIME, c.WIDTH/100, c.HEIGHT/100,
+                                  150, 50, "Test bicia")
+test_wyniesienie_button = button.Button(c.LIME, c.WIDTH/100, 2*c.HEIGHT/100+50,
+                                        150, 50, "Test wyniesienia")
+test_wygrana_button = button.Button(c.LIME, c.WIDTH/100, 3*c.HEIGHT/100+100,
+                                    150, 50, "Test wygranej")
 
 def show_move(msg, x, y):
-    textMessage = font.render(msg, True, (255, 255, 255))
-    screen.blit(textMessage, (x, y))
+    """ Rendering text at the game window. """
+    text_message = font.render(msg, True, (255, 255, 255))
+    screen.blit(text_message, (x, y))
 
-def runWindow():
-
-    global gracz
-    global graczK
-
+def run_window():
+    """Game window. """
     running = True
 
     while running:
-        screen.fill((125, 125, 125))
+        screen.fill(c.GRAY)
 
         # Obsluga zdarzen
         for event in pygame.event.get():
             #start_x, start_y = pygame.mouse.get_pos()
             if event.type == pygame.QUIT:
                 running = False
-                #sys.exit(0)
 
 
-            '''           KONTROLA MYSZY              '''
+            #KONTROLA MYSZY
             if event.type == pygame.MOUSEMOTION:
                 pos = pygame.mouse.get_pos()
 
-                '''         ZMIANA KOLOROW PRZYCISKOW       '''
-                if restartButton.isOver(pos[0], pos[1]):
-                    restartButton.color = (255, 0, 0)
+                #ZMIANA KOLOROW PRZYCISKOW
+                if restart_button.is_over(pos[0], pos[1]):
+                    restart_button.color = c.RED
                 else:
-                    restartButton.color = (0, 255, 0)
+                    restart_button.color = c.LIME
 
-                if test_bicieButton.isOver(pos[0], pos[1]):
-                    test_bicieButton.color = (255, 0, 0)
+                if test_bicie_button.is_over(pos[0], pos[1]):
+                    test_bicie_button.color = c.RED
                 else:
-                    test_bicieButton.color = (0, 255, 0)
+                    test_bicie_button.color = c.LIME
 
-                if test_wyniesienieButton.isOver(pos[0], pos[1]):
-                    test_wyniesienieButton.color = (255, 0, 0)
+                if test_wyniesienie_button.is_over(pos[0], pos[1]):
+                    test_wyniesienie_button.color = c.RED
                 else:
-                    test_wyniesienieButton.color = (0, 255, 0)
+                    test_wyniesienie_button.color = c.LIME
 
-                if test_wygranaButton.isOver(pos[0], pos[1]):
-                    test_wygranaButton.color = (255, 0, 0)
+                if test_wygrana_button.is_over(pos[0], pos[1]):
+                    test_wygrana_button.color = c.RED
                 else:
-                    test_wygranaButton.color = (0, 255, 0)
+                    test_wygrana_button.color = c.LIME
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 start_x, start_y = pygame.mouse.get_pos()
 
-                '''           PRZYCISK RESTARTU              '''
-                if restartButton.isOver(start_x, start_y):
-                    ukladCzyszczenie()
-                    ukladPoczatkowy()
-                    wyswietl()
-                    punktyStart()
-                    gracz = 1
-                    graczK = 0
+                #PRZYCISK RESTARTU
+                if restart_button.is_over(start_x, start_y):
+                    board.uklad_czyszczenie()
+                    board.uklad_poczatkowy()
+                    board.wyswietl()
+                    pkt.punkty_start()
+                    c.gracz = 1
+                    c.gracz_k = 0
 
-                '''             PRZYCISKI TESTOW             '''
-                if test_bicieButton.isOver(start_x, start_y):
-                    ukladCzyszczenie()
-                    test_1()
-                    wyswietl()
-                    punktyStart()
-                    gracz = 1
-                    graczK = 0
+                #PRZYCISKI TESTOW
+                if test_bicie_button.is_over(start_x, start_y):
+                    board.uklad_czyszczenie()
+                    board.test_1()
+                    board.wyswietl()
+                    pkt.punkty_start()
+                    c.gracz = 1
+                    c.gracz_k = 0
 
-                if test_wyniesienieButton.isOver(start_x, start_y):
-                    ukladCzyszczenie()
-                    test_2()
-                    wyswietl()
-                    punktyStart()
-                    gracz = 1
-                    graczK = 0
+                if test_wyniesienie_button.is_over(start_x, start_y):
+                    board.uklad_czyszczenie()
+                    board.test_2()
+                    board.wyswietl()
+                    pkt.punkty_start()
+                    c.gracz = 1
+                    c.gracz_k = 0
 
-                if test_wygranaButton.isOver(start_x, start_y):
-                    ukladCzyszczenie()
-                    test_3()
-                    wyswietl()
-                    punktyStart()
-                    gracz = 1
-                    graczK = 0
-                '''           ODCZYT POLOZENIA POCZATKOWEGO MYSZKI             '''
-                start_x = int((start_x - planszaX)/32)
-                start_y = int((start_y - planszaY)/32)
+                if test_wygrana_button.is_over(start_x, start_y):
+                    board.uklad_czyszczenie()
+                    board.test_3()
+                    board.wyswietl()
+                    pkt.punkty_start()
+                    c.gracz = 1
+                    c.gracz_k = 0
 
-                '''           ODCZYT POLOZENIA KONCOWEGO MYSZKI             '''
+                #ODCZYT POLOZENIA POCZATKOWEGO MYSZKI
+                start_x = int((start_x - c.PLANSZA_X)/c.FIELD)
+                start_y = int((start_y - c.PLANSZA_Y)/c.FIELD)
+
+            #ODCZYT POLOZENIA KONCOWEGO MYSZKI
             if event.type == pygame.MOUSEBUTTONUP:
                 end_x, end_y = pygame.mouse.get_pos()
-                end_x = int((end_x - planszaX) / 32)
-                end_y = int((end_y - planszaY) / 32)
+                end_x = int((end_x - c.PLANSZA_X) / c.FIELD)
+                end_y = int((end_y - c.PLANSZA_Y) / c.FIELD)
 
 
-                '''           OBSŁUGA RUCHÓW             '''
-                if gracz == 1:
+                #OBSŁUGA RUCHÓW
+                if c.gracz == 1:
                     print(start_x, start_y, end_x, end_y)
-                    if not ruchGracza(start_y, start_x, end_y, end_x, gracz, graczK):  # or krotka[1] (bicie True/False)
-                        gracz *= -1
-                        graczK = -graczK - 1
-                        wyswietl()
+                    if not rules.ruch_gracza(start_y, start_x, end_y, end_x, c.gracz, c.gracz_k):
+                        # or krotka[1] (bicie True/False)
+                        c.gracz *= -1
+                        c.gracz_k = -c.gracz_k - 1
+                        board.wyswietl()
                 else:
-                    if not ruchGracza(start_y, start_x, end_y, end_x, gracz, graczK):
-                        gracz *= -1
-                        graczK = -graczK - 1
-                        wyswietl()
-                gracz *= -1
-                graczK = -graczK - 1
-                wyswietl()
-                print(pkt.biale)
-                print(pkt.czarne)
+                    if not rules.ruch_gracza(start_y, start_x, end_y, end_x, c.gracz, c.gracz_k):
+                        c.gracz *= -1
+                        c.gracz_k = -c.gracz_k - 1
+                        board.wyswietl()
+                c.gracz *= -1
+                c.gracz_k = -c.gracz_k - 1
+                board.wyswietl()
+                print(c.biale)
+                print(c.czarne)
 
-        '''           RYSOWANIE SZACHOWNICY            '''
-        screen.blit(plansza_img, (planszaX, planszaY))
+        #RYSOWANIE SZACHOWNICY
+        screen.blit(plansza_img, (c.PLANSZA_X, c.PLANSZA_Y))
 
         for i in range(10):
             for j in range(10):
-                if plansza[i][j] == WHITE_PAWN:
-                    screen.blit(white_pawn_img, (planszaX + j*BOARD/SIZE, planszaY + i * BOARD/SIZE))
-                elif plansza[i][j] == BLACK_PAWN:
-                    screen.blit(black_pawn_img, (planszaX + j*BOARD/SIZE, planszaY + i * BOARD/SIZE))
-                elif plansza[i][j] == WHITE_QUENN:
-                    screen.blit(white_quenn_img, (planszaX + j*BOARD/SIZE, planszaY + i * BOARD/SIZE))
-                elif plansza[i][j] == BLACK_QUENN:
-                    screen.blit(black_quenn_img, (planszaX + j*BOARD/SIZE, planszaY + i * BOARD/SIZE))
+                if c.plansza[i][j] == c.WHITE_PAWN:
+                    screen.blit(white_pawn_img, (c.PLANSZA_X + j*c.BOARD/c.SIZE,
+                                                 c.PLANSZA_Y + i * c.BOARD/c.SIZE))
+                elif c.plansza[i][j] == c.BLACK_PAWN:
+                    screen.blit(black_pawn_img, (c.PLANSZA_X + j*c.BOARD/c.SIZE,
+                                                 c.PLANSZA_Y + i * c.BOARD/c.SIZE))
+                elif c.plansza[i][j] == c.WHITE_QUENN:
+                    screen.blit(white_quenn_img, (c.PLANSZA_X + j*c.BOARD/c.SIZE,
+                                                  c.PLANSZA_Y + i * c.BOARD/c.SIZE))
+                elif c.plansza[i][j] == c.BLACK_QUENN:
+                    screen.blit(black_quenn_img, (c.PLANSZA_X + j*c.BOARD/c.SIZE,
+                                                  c.PLANSZA_Y + i * c.BOARD/c.SIZE))
 
-        '''           INFORMACJA CZYJ RUCH             '''
-        if pkt.biale == 0:
+        #INFORMACJA CZYJ RUCH / KTO WYGRAL
+        if c.biale == 0:
             show_move("WYGRAŁY CZARNE", textX, textY)
 
-        elif pkt.czarne == 0:
+        elif c.czarne == 0:
             show_move("WYGRAŁY BIAŁE", textX, textY)
 
-        elif gracz == 1:
+        elif c.gracz == 1:
             show_move("Tura: białe", textX, textY)
         else:
             show_move("Tura: czarne", textX, textY)
 
-        restartButton.draw(screen, (0, 0, 0))
-        test_bicieButton.draw(screen, (0, 0, 0))
-        test_wyniesienieButton.draw(screen, (0, 0, 0))
-        test_wygranaButton.draw(screen, (0, 0, 0))
-        pygame.display.update() # pokazanie gotowego rysunku gry
-
+        restart_button.draw(screen, (0, 0, 0))
+        test_bicie_button.draw(screen, (0, 0, 0))
+        test_wyniesienie_button.draw(screen, (0, 0, 0))
+        test_wygrana_button.draw(screen, (0, 0, 0))
+        pygame.display.update()     # pokazanie gotowego rysunku gry
