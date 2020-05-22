@@ -2,6 +2,7 @@
 import pygame
 
 import const as c
+import gra as g
 import board
 import rules
 import Button as button
@@ -49,10 +50,10 @@ test_wyniesienie_button = button.Button(c.LIME, c.WIDTH/100, 2*c.HEIGHT/100+50,
 test_wygrana_button = button.Button(c.LIME, c.WIDTH/100, 3*c.HEIGHT/100+100,
                                     150, 50, "Test wygranej")
 
-def show_move(msg, x, y):
+def show_move(msg, x_coord, y_coord):
     """ Rendering text at the game window. """
     text_message = font.render(msg, True, (255, 255, 255))
-    screen.blit(text_message, (x, y))
+    screen.blit(text_message, (x_coord, y_coord))
 
 def run_window():
     """Game window. """
@@ -102,8 +103,8 @@ def run_window():
                     board.uklad_poczatkowy()
                     board.wyswietl()
                     pkt.punkty_start()
-                    c.gracz = 1
-                    c.gracz_k = 0
+                    g.gracz = 1
+                    g.gracz_k = 0
 
                 #PRZYCISKI TESTOW
                 if test_bicie_button.is_over(start_x, start_y):
@@ -111,24 +112,24 @@ def run_window():
                     board.test_1()
                     board.wyswietl()
                     pkt.punkty_start()
-                    c.gracz = 1
-                    c.gracz_k = 0
+                    g.gracz = 1
+                    g.gracz_k = 0
 
                 if test_wyniesienie_button.is_over(start_x, start_y):
                     board.uklad_czyszczenie()
                     board.test_2()
                     board.wyswietl()
                     pkt.punkty_start()
-                    c.gracz = 1
-                    c.gracz_k = 0
+                    g.gracz = 1
+                    g.gracz_k = 0
 
                 if test_wygrana_button.is_over(start_x, start_y):
                     board.uklad_czyszczenie()
                     board.test_3()
                     board.wyswietl()
                     pkt.punkty_start()
-                    c.gracz = 1
-                    c.gracz_k = 0
+                    g.gracz = 1
+                    g.gracz_k = 0
 
                 #ODCZYT POLOZENIA POCZATKOWEGO MYSZKI
                 start_x = int((start_x - c.PLANSZA_X)/c.FIELD)
@@ -142,50 +143,50 @@ def run_window():
 
 
                 #OBSŁUGA RUCHÓW
-                if c.gracz == 1:
+                if g.gracz == 1:
                     print(start_x, start_y, end_x, end_y)
-                    if not rules.ruch_gracza(start_y, start_x, end_y, end_x, c.gracz, c.gracz_k):
+                    if not rules.ruch_gracza(start_y, start_x, end_y, end_x, g.gracz, g.gracz_k):
                         # or krotka[1] (bicie True/False)
-                        c.gracz *= -1
-                        c.gracz_k = -c.gracz_k - 1
+                        g.gracz *= -1
+                        g.gracz_k = -g.gracz_k - 1
                         board.wyswietl()
                 else:
-                    if not rules.ruch_gracza(start_y, start_x, end_y, end_x, c.gracz, c.gracz_k):
-                        c.gracz *= -1
-                        c.gracz_k = -c.gracz_k - 1
+                    if not rules.ruch_gracza(start_y, start_x, end_y, end_x, g.gracz, g.gracz_k):
+                        g.gracz *= -1
+                        g.gracz_k = -g.gracz_k - 1
                         board.wyswietl()
-                c.gracz *= -1
-                c.gracz_k = -c.gracz_k - 1
+                g.gracz *= -1
+                g.gracz_k = -g.gracz_k - 1
                 board.wyswietl()
-                print(c.biale)
-                print(c.czarne)
+                print(g.biale)
+                print(g.czarne)
 
         #RYSOWANIE SZACHOWNICY
         screen.blit(plansza_img, (c.PLANSZA_X, c.PLANSZA_Y))
 
         for i in range(10):
             for j in range(10):
-                if c.plansza[i][j] == c.WHITE_PAWN:
+                if g.plansza[i][j] == c.WHITE_PAWN:
                     screen.blit(white_pawn_img, (c.PLANSZA_X + j*c.BOARD/c.SIZE,
                                                  c.PLANSZA_Y + i * c.BOARD/c.SIZE))
-                elif c.plansza[i][j] == c.BLACK_PAWN:
+                elif g.plansza[i][j] == c.BLACK_PAWN:
                     screen.blit(black_pawn_img, (c.PLANSZA_X + j*c.BOARD/c.SIZE,
                                                  c.PLANSZA_Y + i * c.BOARD/c.SIZE))
-                elif c.plansza[i][j] == c.WHITE_QUENN:
+                elif g.plansza[i][j] == c.WHITE_QUENN:
                     screen.blit(white_quenn_img, (c.PLANSZA_X + j*c.BOARD/c.SIZE,
                                                   c.PLANSZA_Y + i * c.BOARD/c.SIZE))
-                elif c.plansza[i][j] == c.BLACK_QUENN:
+                elif g.plansza[i][j] == c.BLACK_QUENN:
                     screen.blit(black_quenn_img, (c.PLANSZA_X + j*c.BOARD/c.SIZE,
                                                   c.PLANSZA_Y + i * c.BOARD/c.SIZE))
 
         #INFORMACJA CZYJ RUCH / KTO WYGRAL
-        if c.biale == 0:
+        if g.biale == 0:
             show_move("WYGRAŁY CZARNE", textX, textY)
 
-        elif c.czarne == 0:
+        elif g.czarne == 0:
             show_move("WYGRAŁY BIAŁE", textX, textY)
 
-        elif c.gracz == 1:
+        elif g.gracz == 1:
             show_move("Tura: białe", textX, textY)
         else:
             show_move("Tura: czarne", textX, textY)

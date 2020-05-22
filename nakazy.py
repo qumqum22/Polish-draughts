@@ -2,7 +2,7 @@
 import board
 import rules
 import const as c
-
+import gra as g
 
 quenn_mozliwe_ruchy_biale = []
 quenn_mozliwe_ruchy_czarne = []
@@ -22,23 +22,23 @@ def pawn_move(gracz):
     pion_mozliwe_ruchy_czarne.clear()
 
     if gracz == 1:
-        for row_start, column_start in c.biale_piony:
+        for row_start, column_start in g.biale_piony:
             if rules.sprawdz_pozycje(row_start-1, column_start+1):
-                if c.plansza[row_start-1][column_start+1] == c.EMPTY_FIELD:
+                if g.plansza[row_start-1][column_start+1] == c.EMPTY_FIELD:
                     pion_mozliwe_ruchy_biale.append((row_start, column_start,
                                                      row_start - 1, column_start + 1))
             if rules.sprawdz_pozycje(row_start - 1, column_start - 1):
-                if c.plansza[row_start-1][column_start-1] == c.EMPTY_FIELD:
+                if g.plansza[row_start-1][column_start-1] == c.EMPTY_FIELD:
                     pion_mozliwe_ruchy_biale.append((row_start, column_start,
                                                      row_start - 1, column_start - 1))
         return pion_mozliwe_ruchy_biale
-    for row_start, column_start in c.czarne_piony:
+    for row_start, column_start in g.czarne_piony:
         if rules.sprawdz_pozycje(row_start + 1, column_start + 1):
-            if c.plansza[row_start+1][column_start+1] == c.EMPTY_FIELD:
+            if g.plansza[row_start+1][column_start+1] == c.EMPTY_FIELD:
                 pion_mozliwe_ruchy_czarne.append((row_start, column_start,
                                                   row_start + 1, column_start + 1))
         if rules.sprawdz_pozycje(row_start + 1, column_start - 1):
-            if c.plansza[row_start+1][column_start-1] == c.EMPTY_FIELD:
+            if g.plansza[row_start+1][column_start-1] == c.EMPTY_FIELD:
                 pion_mozliwe_ruchy_czarne.append((row_start, column_start,
                                                   row_start + 1, column_start - 1))
     return pion_mozliwe_ruchy_czarne
@@ -52,7 +52,7 @@ def pawn_hit(gracz):
     pion_mozliwe_bicia.clear()
 
     if gracz == 1:
-        for pionek in c.biale_piony:
+        for pionek in g.biale_piony:
             if rules.sprawdz_bicie_pionka(pionek[0], pionek[1],
                                           pionek[0]+2, pionek[1]+2, gracz):
                 pion_mozliwe_bicia.append((pionek[0], pionek[1],
@@ -75,7 +75,7 @@ def pawn_hit(gracz):
 
         return pion_mozliwe_bicia
 
-    for pionek in c.czarne_piony:
+    for pionek in g.czarne_piony:
         if rules.sprawdz_bicie_pionka(pionek[0], pionek[1],
                                       pionek[0] + 2, pionek[1] + 2, gracz):
             pion_mozliwe_bicia.append((pionek[0], pionek[1],

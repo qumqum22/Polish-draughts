@@ -25,20 +25,4 @@ GRAY = (128, 128, 128)
 if LINES_OF_PAWNS > SIZE / 2:           #Automatyczna poprawka ilości linii wypełnionych pionkami
     LINES_OF_PAWNS = int(SIZE / 2) - 1  #Na wypadek przepelnienia linii pionków jednego gracza
 
-''' ZMIENNE '''
 
-#Klasa na zmienne globalne , nazwa klasy : Gra
-plansza = [[EMPTY_FIELD for column in range(SIZE)] for row in range(SIZE)]
-gracz = 1  # 1 bialy || -1 czarny
-figury = [BLACK_QUENN, BLACK_PAWN, WHITE_QUENN, WHITE_PAWN]
-gracz_k = 0  # 0 bialy || -1 czarny
-
-biale_piony = []
-biale_damki = []
-
-czarne_piony = []
-czarne_damki = []
-
-biale = 0
-czarne = 0
-punktacja = [[0 for column in range(SIZE)] for row in range(SIZE)]
