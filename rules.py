@@ -4,8 +4,8 @@ import pygame
 import punktacja as pkt
 import nakazy
 import board
-import const as c
-import gra as g
+import const as con
+import gra
 #Bicia są obowiązkowe. Kiedy istnieje kilka możliwych bić, gracz musi wykonać maksymalne
 # (tzn. takie, w którym zbije największą liczbę pionów lub damek przeciwnika).
 # Jeżeli gracz ma dwie lub więcej możliwości bicia takiej samej ilości bierek
@@ -17,10 +17,11 @@ import gra as g
 
 def sprawdz_pozycje(x_coord, y_coord):
     """ Checking if (x, y) coordinates are correct """
-    if -1 < x_coord < c.SIZE:
-        if -1 < y_coord < c.SIZE:
+    if -1 < x_coord < con.SIZE:
+        if -1 < y_coord < con.SIZE:
             return True
     return False
+
 
 def ruch_gracza(row_start, column_start, row_end, column_end, gracz, gracz_k):
     """ Moving a figure """
@@ -30,12 +31,12 @@ def ruch_gracza(row_start, column_start, row_end, column_end, gracz, gracz_k):
         between_column_points = int((column_start + column_end) / 2)
 
         #Zapisywanie jaką figurą wykonuje ruch
-        if g.plansza[row_start][column_start] == g.figury[-gracz]:
-            figure = g.figury[-gracz]
+        if gra.Gra.plansza[row_start][column_start] == gra.Gra.figury[-gracz]:
+            figure = gra.Gra.figury[-gracz]
             pion = 1
 
-        elif g.plansza[row_start][column_start] == g.figury[-gracz - 1]:
-            figure = g.figury[-gracz - 1]
+        elif gra.Gra.plansza[row_start][column_start] == gra.Gra.figury[-gracz - 1]:
+            figure = gra.Gra.figury[-gracz - 1]
             pion = 0
 
         else:
@@ -47,87 +48,65 @@ def ruch_gracza(row_start, column_start, row_end, column_end, gracz, gracz_k):
             if nakazy.pawn_hit(gracz):         # jesli istnieja bicia, musze je wykonac
                 if ruch in nakazy.pawn_hit(gracz):
 
-                    #Zamienic to na funkcje
-                    g.plansza[row_start][column_start] = c.EMPTY_FIELD
-                    #Odejmowanie punktow przeciwnikowi od piona i od pozycji piona
-                    if g.plansza[between_row_points][between_column_points] == c.WHITE_PAWN:
-                        g.biale += -c.POINTS_PAWN
-                        g.biale += -pkt.punkty_planszy(between_row_points, between_column_points,
-                                                       -gracz, gracz * gracz_k - 1)
-                    elif g.plansza[between_row_points][between_column_points] == c.BLACK_PAWN:
-                        g.czarne += -c.POINTS_PAWN
-                        g.czarne += -pkt.punkty_planszy(between_row_points, between_column_points,
-                                                        -gracz, gracz * gracz_k - 1)
-                    elif g.plansza[between_row_points][between_column_points] == c.WHITE_QUENN:
-                        g.biale += -c.POINTS_QUENN
-                        g.biale += -pkt.punkty_planszy(between_row_points, between_column_points,
-                                                       -gracz, gracz * gracz_k - 1)
-                    else:
-                        g.czarne += -c.POINTS_QUENN
-                        g.czarne += -pkt.punkty_planszy(between_row_points, between_column_points,
-                                                        -gracz, gracz * gracz_k - 1)
-                    g.plansza[between_row_points][between_column_points] = c.EMPTY_FIELD
-                    g.plansza[row_end][column_end] = figure
+                    gra.Gra.plansza[row_start][column_start] = con.EMPTY_FIELD
+
+                    pkt.punkty_bicie_pionem(ruch, gracz, gracz_k)     # tylko dla pionow
+
+                    gra.Gra.plansza[between_row_points][between_column_points] = con.EMPTY_FIELD
+                    gra.Gra.plansza[row_end][column_end] = figure
+
+
+
                     pkt.punkty_update(row_start, column_start, row_end, column_end, gracz, gracz_k)
                     ### Wynonanie fnkcji podobnej do ruch_gracza,
                     # ale parametr row/column_end staje sie poczatkowym,
                     # jesli nie ma takiego bicia, fałsz
-                    if nakazy.next_pawn_hit(row_end, column_end, gracz)[1]:
-                        for event in pygame.event.get():
-                            if event.type == pygame.MOUSEBUTTONDOWN:
-                                start_x, start_y = pygame.mouse.get_pos()
-                                start_x = int((start_x - c.PLANSZA_X) / c.FIELD)
-                                start_y = int((start_y - c.PLANSZA_Y) / c.FIELD)
 
-                            #  ODCZYT POLOZENIA KONCOWEGO MYSZKI
-                            if event.type == pygame.MOUSEBUTTONUP:
-                                end_x, end_y = pygame.mouse.get_pos()
-                                end_x = int((end_x - c.PLANSZA_X) / c.FIELD)
-                                end_y = int((end_y - c.PLANSZA_Y) / c.FIELD)
-                                if (row_end, column_end, end_x, end_y) in \
-                                        nakazy.next_pawn_hit(row_end, column_end, gracz):
-                                    ruch_gracza(row_end, column_end, end_x, end_y, gracz, gracz_k)
-                                else:
-                                    print("Blad")
+                    if nakazy.next_pawn_hit(row_end, column_end, gracz)[1]:
+                        gra.Gra.attack_from.clear()
+                        gra.Gra.attack_from.append(row_end)
+                        gra.Gra.attack_from.append(column_end)
+                        return False
+                    else:
+                        gra.Gra.attack_from.clear()
                     board.wyniesienie(row_end, column_end, gracz)
                     return True
                 return False
 
+            if nakazy.quenn_move(gracz):
+                print("Krolowa moze bic")
+                return False
+
             if ruch in nakazy.pawn_move(gracz):
-                g.plansza[row_start][column_start] = c.EMPTY_FIELD
-                g.plansza[row_end][column_end] = figure
+                gra.Gra.plansza[row_start][column_start] = con.EMPTY_FIELD
+                gra.Gra.plansza[row_end][column_end] = figure
             else:
                 print("Ruch niedozwolony")
                 return False
         else:
             #OBSLUGA DAMKI
+            if not (row_start, column_start) in nakazy.quenn_move(gracz):
+                if nakazy.pawn_hit(gracz):
+                    print("Musisz bic pionem")
+                    return False
+
             krotka = sprawdz_ruch_damki(row_start, column_start, row_end, column_end, gracz)
 
             if krotka[3]:   # Prawda/fałsz  ruch prawidłowy / ruch nieprawidłowy
                 if krotka[0] == 1:   # Prawda/ fałsz     Bicie / zwykly ruch
-                    g.plansza[row_start][column_start] = c.EMPTY_FIELD
-                    #Odejmowanie punktow przeciwnikowi od piona i od pozycji piona
-                    if g.plansza[krotka[1]][krotka[2]] == c.WHITE_PAWN:
-                        g.biale += -c.POINTS_PAWN
-                        g.biale += -pkt.punkty_planszy(krotka[1], krotka[2],
-                                                       -gracz, gracz * gracz_k - 1)
-                    elif g.plansza[krotka[1]][krotka[2]] == c.BLACK_PAWN:
-                        g.czarne += -c.POINTS_PAWN
-                        g.czarne += -pkt.punkty_planszy(krotka[1], krotka[2],
-                                                        -gracz, gracz * gracz_k - 1)
-                    elif g.plansza[krotka[1]][krotka[2]] == c.WHITE_QUENN:
-                        g.biale += -c.POINTS_QUENN
-                        g.biale += -pkt.punkty_planszy(krotka[1], krotka[2],
-                                                       -gracz, gracz * gracz_k - 1)
-                    else:
-                        g.czarne += -c.POINTS_QUENN
-                        g.czarne += -pkt.punkty_planszy(krotka[1], krotka[2],
-                                                        -gracz, gracz * gracz_k - 1)
-                    g.plansza[krotka[1]][krotka[2]] = c.EMPTY_FIELD
-                    g.plansza[row_end][column_end] = figure
+                    gra.Gra.plansza[row_start][column_start] = con.EMPTY_FIELD
+
+                    pkt.punkty_bicie_damka(krotka, gracz, gracz_k)
+
+                    gra.Gra.plansza[krotka[1]][krotka[2]] = con.EMPTY_FIELD
+                    gra.Gra.plansza[row_end][column_end] = figure
+                elif (row_start, column_start) in nakazy.quenn_move(gracz):
+                    print("Musisz bic")
+                    return False
                 else:
-                    g.plansza[row_start][column_start] = c.EMPTY_FIELD
-                    g.plansza[row_end][column_end] = figure
+                    gra.Gra.plansza[row_start][column_start] = con.EMPTY_FIELD
+                    gra.Gra.plansza[row_end][column_end] = figure
+
             else:
                 print(krotka[4])
                 return False
@@ -139,8 +118,6 @@ def ruch_gracza(row_start, column_start, row_end, column_end, gracz, gracz_k):
     return False
 
 
-
-
 def sprawdz_bicie_pionka(row_start, column_start, row_end, column_end, gracz):
     """ Check if hitting enemy figure is possible"""
 
@@ -149,10 +126,10 @@ def sprawdz_bicie_pionka(row_start, column_start, row_end, column_end, gracz):
     between_row_points = int((row_start + row_end) / 2)
     between_column_points = int((column_start + column_end) / 2)
     if abs(row_end - row_start) == 2 and abs(column_start - column_end) == 2:
-        if g.plansza[row_end][column_end] == c.EMPTY_FIELD:
-            if g.plansza[between_row_points][between_column_points] == g.figury[gracz]:
+        if gra.Gra.plansza[row_end][column_end] == con.EMPTY_FIELD:
+            if gra.Gra.plansza[between_row_points][between_column_points] == gra.Gra.figury[gracz]:
                 return True
-            if g.plansza[between_row_points][between_column_points] == g.figury[gracz-1]:
+            if gra.Gra.plansza[between_row_points][between_column_points] == gra.Gra.figury[gracz-1]:
                 return True
             return False
         return False
@@ -182,19 +159,19 @@ def sprawdz_ruch_damki(row_start, column_start, row_end, column_end, gracz):
     #r_step = row_start + row_step
     #c_step = column_start + column_step
 
-    if g.plansza[row_end][column_end] == c.EMPTY_FIELD and abs(row) == abs(column) and row != 0:
+    if gra.Gra.plansza[row_end][column_end] == con.EMPTY_FIELD and abs(row) == abs(column) and row != 0:
         x_pawn = 0
         y_pawn = 0
-        for i in range(abs(column_end - column_start)):
+        for _ in range(abs(column_end - column_start)):
             r_step = row_start + row_step
             c_step = column_start + column_step
-            if g.plansza[r_step][c_step] == g.figury[gracz] \
-                    or g.plansza[r_step][c_step] == g.figury[gracz-1]:
+            if gra.Gra.plansza[r_step][c_step] == gra.Gra.figury[gracz] \
+                    or gra.Gra.plansza[r_step][c_step] == gra.Gra.figury[gracz-1]:
                 licznik_pionow += 1
                 x_pawn = r_step
                 y_pawn = c_step
-            elif g.plansza[r_step][c_step] == g.figury[-gracz] \
-                    or g.plansza[r_step][c_step] == g.figury[gracz+1]:
+            elif gra.Gra.plansza[r_step][c_step] == gra.Gra.figury[-gracz] \
+                    or gra.Gra.plansza[r_step][c_step] == gra.Gra.figury[gracz+1]:
                 return 0, 0, 0, False, "Nie mozesz skakac poprzez swoich"
             if row_step > 0:
                 row_step += 1

@@ -1,14 +1,8 @@
 """ Functions important for rules file. """
 import board
 import rules
-import const as c
-import gra as g
-
-quenn_mozliwe_ruchy_biale = []
-quenn_mozliwe_ruchy_czarne = []
-
-quenn_mozliwe_bicia_biale = []
-quenn_mozliwe_bicia_czarne = []
+import const as con
+import gra
 
 def pawn_move(gracz):
     """ Funkcja zwraca liste wszystkich mozliwych ruchow gracza. """
@@ -22,23 +16,23 @@ def pawn_move(gracz):
     pion_mozliwe_ruchy_czarne.clear()
 
     if gracz == 1:
-        for row_start, column_start in g.biale_piony:
+        for row_start, column_start in gra.Gra.biale_piony:
             if rules.sprawdz_pozycje(row_start-1, column_start+1):
-                if g.plansza[row_start-1][column_start+1] == c.EMPTY_FIELD:
+                if gra.Gra.plansza[row_start-1][column_start+1] == con.EMPTY_FIELD:
                     pion_mozliwe_ruchy_biale.append((row_start, column_start,
                                                      row_start - 1, column_start + 1))
             if rules.sprawdz_pozycje(row_start - 1, column_start - 1):
-                if g.plansza[row_start-1][column_start-1] == c.EMPTY_FIELD:
+                if gra.Gra.plansza[row_start-1][column_start-1] == con.EMPTY_FIELD:
                     pion_mozliwe_ruchy_biale.append((row_start, column_start,
                                                      row_start - 1, column_start - 1))
         return pion_mozliwe_ruchy_biale
-    for row_start, column_start in g.czarne_piony:
+    for row_start, column_start in gra.Gra.czarne_piony:
         if rules.sprawdz_pozycje(row_start + 1, column_start + 1):
-            if g.plansza[row_start+1][column_start+1] == c.EMPTY_FIELD:
+            if gra.Gra.plansza[row_start+1][column_start+1] == con.EMPTY_FIELD:
                 pion_mozliwe_ruchy_czarne.append((row_start, column_start,
                                                   row_start + 1, column_start + 1))
         if rules.sprawdz_pozycje(row_start + 1, column_start - 1):
-            if g.plansza[row_start+1][column_start-1] == c.EMPTY_FIELD:
+            if gra.Gra.plansza[row_start+1][column_start-1] == con.EMPTY_FIELD:
                 pion_mozliwe_ruchy_czarne.append((row_start, column_start,
                                                   row_start + 1, column_start - 1))
     return pion_mozliwe_ruchy_czarne
@@ -52,7 +46,7 @@ def pawn_hit(gracz):
     pion_mozliwe_bicia.clear()
 
     if gracz == 1:
-        for pionek in g.biale_piony:
+        for pionek in gra.Gra.biale_piony:
             if rules.sprawdz_bicie_pionka(pionek[0], pionek[1],
                                           pionek[0]+2, pionek[1]+2, gracz):
                 pion_mozliwe_bicia.append((pionek[0], pionek[1],
@@ -75,7 +69,7 @@ def pawn_hit(gracz):
 
         return pion_mozliwe_bicia
 
-    for pionek in g.czarne_piony:
+    for pionek in gra.Gra.czarne_piony:
         if rules.sprawdz_bicie_pionka(pionek[0], pionek[1],
                                       pionek[0] + 2, pionek[1] + 2, gracz):
             pion_mozliwe_bicia.append((pionek[0], pionek[1],
@@ -131,23 +125,54 @@ def next_pawn_hit(row_start, column_start, gracz):
     return [], False
 
 
-def quenn_move(row_start, column_start, gracz):
-    """ Funkcja nie dokonczona, sprawdza mozliwe ruchy i bicia krolowa. """
-    for i in range(-9, 10, 1):
-        move_tuple = rules.sprawdz_ruch_damki(row_start, column_start,
-                                              row_start+i, column_start+i, gracz)
-        if move_tuple[3]:
-            if move_tuple[0]:
-                quenn_mozliwe_bicia_biale.append((row_start, column_start,
-                                                  row_start+i, column_start+i))
-            quenn_mozliwe_ruchy_biale.append((row_start, column_start,
-                                              row_start+i, column_start+i))
+def quenn_move(gracz):
+    """ Funkcja sprawdza mozliwe ruchy i bicia krolowa. """
 
-        move_tuple = rules.sprawdz_ruch_damki(row_start, column_start,
-                                              row_start+i, column_start-i, gracz)
-        if move_tuple[3]:
-            if move_tuple[0]:
-                quenn_mozliwe_bicia_biale.append((row_start, column_start,
-                                                  row_start + i, column_start + i))
-            quenn_mozliwe_ruchy_biale.append((row_start, column_start,
-                                              row_start + i, column_start + i))
+
+    quenn_mozliwe_bicia_biale = []
+    quenn_mozliwe_bicia_czarne = []
+    quenn_mozliwe_ruchy_biale = []
+    quenn_mozliwe_ruchy_czarne = []
+
+    quenn_mozliwe_bicia_biale.clear()
+    quenn_mozliwe_bicia_czarne.clear()
+    quenn_mozliwe_ruchy_biale.clear()
+    quenn_mozliwe_ruchy_czarne.clear()
+
+    if gracz == 1:
+        for skad in gra.Gra.biale_damki:
+            for i in range(-9, 10, 1):
+                move_tuple = rules.sprawdz_ruch_damki(skad[0], skad[1],
+                                                      skad[0]+i, skad[1]+i, gracz)
+                if move_tuple[3]:
+                    if move_tuple[0]:
+                        quenn_mozliwe_bicia_biale.append((skad[0], skad[1]))
+                    quenn_mozliwe_ruchy_biale.append((skad[0], skad[1],
+                                                      skad[0] + i, skad[1] + i))
+
+                move_tuple = rules.sprawdz_ruch_damki(skad[0], skad[1],
+                                                      skad[0]+i, skad[1] - i, gracz)
+                if move_tuple[3]:
+                    if move_tuple[0]:
+                        quenn_mozliwe_bicia_biale.append((skad[0], skad[1]))
+                    quenn_mozliwe_ruchy_biale.append((skad[0], skad[1],
+                                                      skad[0] + i, skad[1] - i))
+        return quenn_mozliwe_bicia_biale
+    else:
+        for skad in gra.Gra.czarne_damki:
+            for i in range(-9, 10, 1):
+                move_tuple = rules.sprawdz_ruch_damki(skad[0], skad[1],
+                                                      skad[0] + i, skad[1] + i, gracz)
+                if move_tuple[3]:
+                    if move_tuple[0]:
+                        quenn_mozliwe_bicia_czarne.append((skad[0], skad[1],
+                                                          skad[0] + i, skad[1] + i))
+                    quenn_mozliwe_ruchy_czarne.append((skad[0], skad[1],
+                                                      skad[0] + i, skad[1] + i))
+                if move_tuple[3]:
+                    if move_tuple[0]:
+                        quenn_mozliwe_bicia_czarne.append((skad[0], skad[1],
+                                                          skad[0] + i, skad[1] - i))
+                    quenn_mozliwe_ruchy_czarne.append((skad[0], skad[1],
+                                                      skad[0] + i, skad[1] - i))
+        return quenn_mozliwe_bicia_czarne

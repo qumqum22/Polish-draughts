@@ -17,10 +17,9 @@ POINTS_PAWN = 1
 POINTS_QUENN = 10
 
 #Kolory
-RED = (255, 0, 0)
-LIME = (0, 255, 0)
-BLUE = (0, 0, 255)
-GRAY = (128, 128, 128)
+BUTTON_RED = (255, 0, 0)
+BUTTON_LIME = (0, 255, 0)
+BACKGROUND_COLOR = (128, 128, 128)
 
 if LINES_OF_PAWNS > SIZE / 2:           #Automatyczna poprawka ilości linii wypełnionych pionkami
     LINES_OF_PAWNS = int(SIZE / 2) - 1  #Na wypadek przepelnienia linii pionków jednego gracza

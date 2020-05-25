@@ -1,4 +1,6 @@
 """ Main module. """
+import pygame
+
 import board
 import design
 import punktacja as pkt
@@ -6,6 +8,9 @@ import punktacja as pkt
 
 def rozgrywka():
     """ Main function """
+
+    pygame.init()
+    _ = design.Look()
     board.uklad_poczatkowy()
     board.wyswietl()
     pkt.punkty_start()
@@ -14,7 +19,6 @@ def rozgrywka():
 
 
 rozgrywka()
-
 #funkcja ocen pozycje - liczy laczną pozycje gracza po ruchu pomocnicza do evaluate
 
 
