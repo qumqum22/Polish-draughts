@@ -10,11 +10,11 @@ FIELD = BOARD/SIZE      #Wielkosc pola planszy
 LINES_OF_PAWNS = 4      #Ilość linii wypełnionych pionkami jednego gracza
 BLACK_PAWN = 'c'        #Oznaczenie czarnego pionka
 WHITE_PAWN = 'b'        #Oznaczenie białego pionka
-BLACK_QUENN = 'C'       #Oznaczenie czarnej królowej
-WHITE_QUENN = 'B'       #Oznaczenie białej królowej
+BLACK_QUEEN = 'C'       #Oznaczenie czarnej królowej
+WHITE_QUEEN = 'B'       #Oznaczenie białej królowej
 EMPTY_FIELD = ' '       #Oznaczenie pustego pola
 POINTS_PAWN = 1
-POINTS_QUENN = 10
+POINTS_QUEEN = 10
 
 #Kolory
 BUTTON_RED = (255, 0, 0)

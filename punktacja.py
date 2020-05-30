@@ -41,7 +41,7 @@ def wyswietl_punktacje():
 
 def punkty_planszy(x_coord, y_coord, gracz, gracz_k):
     """ Returns points of position for player."""
-    wynik = gra.Gra.punktacja[gracz*x_coord+gracz_k][y_coord]    # dla bialego [x][y], # czarny [-x-1][y]
+    wynik = gra.Gra.punktacja[gracz*x_coord+gracz_k][y_coord]
     return wynik
 
 
@@ -54,14 +54,14 @@ def punkty_start():
             if gra.Gra.plansza[i][j] == con.WHITE_PAWN:
                 gra.Gra.biale += con.POINTS_PAWN
                 gra.Gra.biale += punkty_planszy(i, j, 1, 0)
-            elif gra.Gra.plansza[i][j] == con.WHITE_QUENN:
-                gra.Gra.biale += con.POINTS_QUENN
+            elif gra.Gra.plansza[i][j] == con.WHITE_QUEEN:
+                gra.Gra.biale += con.POINTS_QUEEN
                 gra.Gra.biale += punkty_planszy(i, j, 1, 0)
             elif gra.Gra.plansza[i][j] == con.BLACK_PAWN:
                 gra.Gra.czarne += con.POINTS_PAWN
                 gra.Gra.czarne += punkty_planszy(i, j, -1, -1)
-            elif gra.Gra.plansza[i][j] == con.BLACK_QUENN:
-                gra.Gra.czarne += con.POINTS_QUENN
+            elif gra.Gra.plansza[i][j] == con.BLACK_QUEEN:
+                gra.Gra.czarne += con.POINTS_QUEEN
                 gra.Gra.czarne += punkty_planszy(i, j, -1, -1)
     print(f'Punkty bialego: {gra.Gra.biale}')
     print(f'Punkty czarnego: {gra.Gra.czarne}')
@@ -91,20 +91,20 @@ def punkty_bicie_pionem(ruch, gracz, gracz_k):
         if gra.Gra.plansza[between_row_points][between_column_points] == con.BLACK_PAWN:
             gra.Gra.czarne += -con.POINTS_PAWN
             gra.Gra.czarne += -punkty_planszy(between_row_points, between_column_points,
-                                            -gracz, gracz * gracz_k - 1)
-        elif gra.Gra.plansza[between_row_points][between_column_points] == con.BLACK_QUENN:
-            gra.Gra.czarne += -con.POINTS_QUENN
+                                              -gracz, gracz * gracz_k - 1)
+        elif gra.Gra.plansza[between_row_points][between_column_points] == con.BLACK_QUEEN:
+            gra.Gra.czarne += -con.POINTS_QUEEN
             gra.Gra.czarne += -punkty_planszy(between_row_points, between_column_points,
-                                            -gracz, gracz * gracz_k - 1)
+                                              -gracz, gracz * gracz_k - 1)
     else:
         if gra.Gra.plansza[between_row_points][between_column_points] == con.WHITE_PAWN:
             gra.Gra.biale += -con.POINTS_PAWN
             gra.Gra.biale += -punkty_planszy(between_row_points, between_column_points,
-                                           -gracz, gracz * gracz_k - 1)
-        elif gra.Gra.plansza[between_row_points][between_column_points] == con.WHITE_QUENN:
-            gra.Gra.biale += -con.POINTS_QUENN
+                                             -gracz, gracz * gracz_k - 1)
+        elif gra.Gra.plansza[between_row_points][between_column_points] == con.WHITE_QUEEN:
+            gra.Gra.biale += -con.POINTS_QUEEN
             gra.Gra.biale += -punkty_planszy(between_row_points, between_column_points,
-                                           -gracz, gracz * gracz_k - 1)
+                                             -gracz, gracz * gracz_k - 1)
 
 def punkty_bicie_damka(krotka, gracz, gracz_k):
     """ Function substracts points for deleting figure. """
@@ -112,17 +112,17 @@ def punkty_bicie_damka(krotka, gracz, gracz_k):
         if gra.Gra.plansza[krotka[1]][krotka[2]] == con.BLACK_PAWN:
             gra.Gra.czarne += -con.POINTS_PAWN
             gra.Gra.czarne += -punkty_planszy(krotka[1], krotka[2],
-                                        -gracz, gracz * gracz_k - 1)
-        elif gra.Gra.plansza[krotka[1]][krotka[2]] == con.BLACK_QUENN:
-            gra.Gra.czarne += -con.POINTS_QUENN
+                                              -gracz, gracz * gracz_k - 1)
+        elif gra.Gra.plansza[krotka[1]][krotka[2]] == con.BLACK_QUEEN:
+            gra.Gra.czarne += -con.POINTS_QUEEN
             gra.Gra.czarne += -punkty_planszy(krotka[1], krotka[2],
-                                        -gracz, gracz * gracz_k - 1)
+                                              -gracz, gracz * gracz_k - 1)
     else:
         if gra.Gra.plansza[krotka[1]][krotka[2]] == con.WHITE_PAWN:
             gra.Gra.biale += -con.POINTS_PAWN
             gra.Gra.biale += -punkty_planszy(krotka[1], krotka[2],
-                                       -gracz, gracz * gracz_k - 1)
-        elif gra.Gra.plansza[krotka[1]][krotka[2]] == con.WHITE_QUENN:
-            gra.Gra.biale += -con.POINTS_QUENN
+                                             -gracz, gracz * gracz_k - 1)
+        elif gra.Gra.plansza[krotka[1]][krotka[2]] == con.WHITE_QUEEN:
+            gra.Gra.biale += -con.POINTS_QUEEN
             gra.Gra.biale += -punkty_planszy(krotka[1], krotka[2],
-                                       -gracz, gracz * gracz_k - 1)
+                                             -gracz, gracz * gracz_k - 1)

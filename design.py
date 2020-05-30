@@ -1,12 +1,13 @@
 """ Module of design. """
 import pygame
 
+import board
+import button
 import const as con
 import gra
-import board
-import rules
-import button
 import punktacja as pkt
+import rules
+
 
 class Look:
     """ Class initializes Graphical interface"""
@@ -19,8 +20,8 @@ class Look:
         # gracz
         Look.white_pawn_img = pygame.image.load("assets/white_pawn_32px.png")
         Look.black_pawn_img = pygame.image.load("assets/black_pawn_32px.png")
-        Look.white_quenn_img = pygame.image.load("assets/white_quenn_32px.png")
-        Look.black_quenn_img = pygame.image.load("assets/black_quenn_32px.png")
+        Look.white_queen_img = pygame.image.load("assets/white_queen_32px.png")
+        Look.black_queen_img = pygame.image.load("assets/black_queen_32px.png")
 
         # Tekst ruchu
         Look.font = pygame.font.Font('freesansbold.ttf', 32)
@@ -30,16 +31,16 @@ class Look:
         #Tworzenie przyciskow
         Look.restart_button \
             = button.Button(con.BUTTON_LIME, (con.PLANSZA_X+con.BOARD + con.BOARD/con.SIZE+2,
-                                                            con.PLANSZA_Y+2), (100, 50), "Restart")
+                                              con.PLANSZA_Y+2), (100, 50), "Restart")
         Look.test_bicie_button \
             = button.Button(con.BUTTON_LIME, (con.WIDTH/100, con.HEIGHT/100),
-                                               (150, 50), "Test bicia")
+                            (150, 50), "Test bicia")
         Look.test_promo_button \
             = button.Button(con.BUTTON_LIME, (con.WIDTH / 100, 2 * con.HEIGHT / 100 +
-                                                               50), (150, 50), "Test wyniesienia")
+                                              50), (150, 50), "Test wyniesienia")
         Look.test_wygrana_button \
             = button.Button(con.BUTTON_LIME, (con.WIDTH/100, 3*con.HEIGHT/100+100),
-                                                 (150, 50), "Test wygranej")
+                            (150, 50), "Test wygranej")
         # ikona gry
         icon = pygame.image.load("assets/icon_32px.png")
         pygame.display.set_icon(icon)
@@ -78,6 +79,7 @@ class Look:
         """ SERVICING TESTS. """
         # PRZYCISK RESTARTU
         if Look.restart_button.is_over(start_x, start_y):
+            gra.Gra.czyszczenie_zmiennych()
             board.uklad_czyszczenie()
             board.uklad_poczatkowy()
             board.wyswietl()
@@ -87,6 +89,7 @@ class Look:
 
         # PRZYCISKI TESTOW
         if Look.test_bicie_button.is_over(start_x, start_y):
+            gra.Gra.czyszczenie_zmiennych()
             board.uklad_czyszczenie()
             board.test_1()
             board.wyswietl()
@@ -95,6 +98,7 @@ class Look:
             gra.Gra.gracz_k = 0
 
         if Look.test_promo_button.is_over(start_x, start_y):
+            gra.Gra.czyszczenie_zmiennych()
             board.uklad_czyszczenie()
             board.test_2()
             board.wyswietl()
@@ -103,6 +107,7 @@ class Look:
             gra.Gra.gracz_k = 0
 
         if Look.test_wygrana_button.is_over(start_x, start_y):
+            gra.Gra.czyszczenie_zmiennych()
             board.uklad_czyszczenie()
             board.test_3()
             board.wyswietl()
@@ -194,11 +199,11 @@ def run_window():
                 elif gra.Gra.plansza[i][j] == con.BLACK_PAWN:
                     Look.screen.blit(Look.black_pawn_img, (con.PLANSZA_X + j*con.BOARD/con.SIZE,
                                                            con.PLANSZA_Y + i * con.BOARD/con.SIZE))
-                elif gra.Gra.plansza[i][j] == con.WHITE_QUENN:
-                    Look.screen.blit(Look.white_quenn_img, (con.PLANSZA_X + j*con.BOARD/con.SIZE,
+                elif gra.Gra.plansza[i][j] == con.WHITE_QUEEN:
+                    Look.screen.blit(Look.white_queen_img, (con.PLANSZA_X + j*con.BOARD/con.SIZE,
                                                             con.PLANSZA_Y + i * con.BOARD/con.SIZE))
-                elif gra.Gra.plansza[i][j] == con.BLACK_QUENN:
-                    Look.screen.blit(Look.black_quenn_img, (con.PLANSZA_X + j*con.BOARD/con.SIZE,
+                elif gra.Gra.plansza[i][j] == con.BLACK_QUEEN:
+                    Look.screen.blit(Look.black_queen_img, (con.PLANSZA_X + j*con.BOARD/con.SIZE,
                                                             con.PLANSZA_Y + i * con.BOARD/con.SIZE))
 
         #INFORMACJA CZYJ RUCH / KTO WYGRAL
