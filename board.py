@@ -38,8 +38,8 @@ def uklad_poczatkowy():
             for column in range(1, con.SIZE, 2):
                 gra.Gra.plansza[row][column] = con.WHITE_PAWN
 
-    gra.Gra.plansza[6][1] = con.WHITE_QUEEN
-    gra.Gra.plansza[7][2] = con.WHITE_QUEEN
+    #gra.Gra.plansza[6][1] = con.WHITE_QUEEN
+    #gra.Gra.plansza[7][2] = con.WHITE_QUEEN
 
 
 def czytaj_figury():
@@ -60,9 +60,9 @@ def czytaj_figury():
             elif gra.Gra.plansza[row][column] == con.BLACK_QUEEN:
                 gra.Gra.czarne_damki.append((row, column))
 
-def wyniesienie(x_coord, y_coord, gracz):
+def wyniesienie(x_coord, y_coord):
     """ Zamiana piona na damke, gdy dojdzie do konca planszy. """
-    if gracz == 1:
+    if gra.Gra.player == con.PLAYER_ONE:
         if x_coord == 0 and gra.Gra.plansza[0][y_coord] == con.WHITE_PAWN:
             gra.Gra.plansza[0][y_coord] = con.WHITE_QUEEN
             gra.Gra.biale += con.POINTS_QUEEN - con.POINTS_PAWN
@@ -100,3 +100,5 @@ def test_3():
     gra.Gra.attack_from.clear()
     gra.Gra.plansza[5][6] = con.BLACK_QUEEN
     gra.Gra.plansza[6][5] = con.WHITE_PAWN
+
+

@@ -15,6 +15,8 @@ WHITE_QUEEN = 'B'       #Oznaczenie białej królowej
 EMPTY_FIELD = ' '       #Oznaczenie pustego pola
 POINTS_PAWN = 1
 POINTS_QUEEN = 10
+PLAYER_ONE = 1
+PLAYER_TWO = 0
 
 #Kolory
 BUTTON_RED = (255, 0, 0)

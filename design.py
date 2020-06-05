@@ -84,8 +84,6 @@ class Look:
             board.uklad_poczatkowy()
             board.wyswietl()
             pkt.punkty_start()
-            gra.Gra.gracz = 1
-            gra.Gra.gracz_k = 0
 
         # PRZYCISKI TESTOW
         if Look.test_bicie_button.is_over(start_x, start_y):
@@ -94,8 +92,6 @@ class Look:
             board.test_1()
             board.wyswietl()
             pkt.punkty_start()
-            gra.Gra.gracz = 1
-            gra.Gra.gracz_k = 0
 
         if Look.test_promo_button.is_over(start_x, start_y):
             gra.Gra.czyszczenie_zmiennych()
@@ -103,8 +99,6 @@ class Look:
             board.test_2()
             board.wyswietl()
             pkt.punkty_start()
-            gra.Gra.gracz = 1
-            gra.Gra.gracz_k = 0
 
         if Look.test_wygrana_button.is_over(start_x, start_y):
             gra.Gra.czyszczenie_zmiennych()
@@ -112,9 +106,6 @@ class Look:
             board.test_3()
             board.wyswietl()
             pkt.punkty_start()
-            gra.Gra.gracz = 1
-            gra.Gra.gracz_k = 0
-
 
 
 
@@ -151,39 +142,32 @@ def run_window():
                 end_y = int((end_y - con.PLANSZA_Y) / con.FIELD)
 
                 #OBSŁUGA RUCHÓW
-                if gra.Gra.gracz == 1:
+                if gra.Gra.player == con.PLAYER_ONE:
                     print(start_x, start_y, end_x, end_y)
                     if gra.Gra.attack_from:
                         if not rules.ruch_gracza(gra.Gra.attack_from[0], gra.Gra.attack_from[1],
-                                                 end_y, end_x, gra.Gra.gracz, gra.Gra.gracz_k):
-                            gra.Gra.gracz *= -1
-                            gra.Gra.gracz_k = -gra.Gra.gracz_k - 1
-                            board.wyswietl()
+                                                 end_y, end_x):
+                            gra.Gra.player = con.PLAYER_ONE
+                        else:
+                            gra.Gra.player = con.PLAYER_TWO
 
                     else:
-                        if not rules.ruch_gracza(start_y, start_x, end_y, end_x,
-                                                 gra.Gra.gracz, gra.Gra.gracz_k):
-                            # or krotka[1] (bicie True/False)
-                            gra.Gra.gracz *= -1
-                            gra.Gra.gracz_k = -gra.Gra.gracz_k - 1
-                            board.wyswietl()
+                        if not rules.ruch_gracza(start_y, start_x, end_y, end_x):
+                            gra.Gra.player = con.PLAYER_ONE
+                        else:
+                            gra.Gra.player = con.PLAYER_TWO
                 else:
                     if gra.Gra.attack_from:
-                        if not rules.ruch_gracza(gra.Gra.attack_from[0], gra.Gra.attack_from[1],
-                                                 end_y, end_x, gra.Gra.gracz, gra.Gra.gracz_k):
-                            gra.Gra.gracz *= -1
-                            gra.Gra.gracz_k = -gra.Gra.gracz_k - 1
-                            board.wyswietl()
-
+                        if not rules.ruch_gracza(gra.Gra.attack_from[0], gra.Gra.attack_from[1], 
+                                                 end_y, end_x):
+                            gra.Gra.player = con.PLAYER_TWO
+                        else:
+                            gra.Gra.player = con.PLAYER_ONE
                     else:
-                        if not rules.ruch_gracza(start_y, start_x, end_y, end_x,
-                                                 gra.Gra.gracz, gra.Gra.gracz_k):
-                            # or krotka[1] (bicie True/False)
-                            gra.Gra.gracz *= -1
-                            gra.Gra.gracz_k = -gra.Gra.gracz_k - 1
-                            board.wyswietl()
-                gra.Gra.gracz *= -1
-                gra.Gra.gracz_k = -gra.Gra.gracz_k - 1
+                        if not rules.ruch_gracza(start_y, start_x, end_y, end_x):
+                            gra.Gra.player = con.PLAYER_TWO
+                        else:
+                            gra.Gra.player = con.PLAYER_ONE
                 board.wyswietl()
                 print(gra.Gra.biale)
                 print(gra.Gra.czarne)
@@ -207,16 +191,20 @@ def run_window():
                                                             con.PLANSZA_Y + i * con.BOARD/con.SIZE))
 
         #INFORMACJA CZYJ RUCH / KTO WYGRAL
-        if gra.Gra.biale == 0:
+        if gra.Gra.biale == 0 or not gra.Gra.available_moves:
             Look.show_move("WYGRAŁY CZARNE", Look.textX, Look.textY)
 
-        elif gra.Gra.czarne == 0:
+        elif gra.Gra.czarne == 0 or not gra.Gra.available_moves:
             Look.show_move("WYGRAŁY BIAŁE", Look.textX, Look.textY)
 
-        elif gra.Gra.gracz == 1:
+        elif gra.Gra.player == con.PLAYER_ONE:
             Look.show_move("Tura: białe", Look.textX, Look.textY)
         else:
             Look.show_move("Tura: czarne", Look.textX, Look.textY)
+        #elif gra.Gra.gracz == 1:
+        #    Look.show_move("Tura: białe", Look.textX, Look.textY)
+        #else:
+        #    Look.show_move("Tura: czarne", Look.textX, Look.textY)
 
         Look.restart_button.draw(Look.screen, (0, 0, 0))
         Look.test_bicie_button.draw(Look.screen, (0, 0, 0))

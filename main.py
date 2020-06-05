@@ -3,13 +3,15 @@ import pygame
 
 import board
 import design
+import gra
 import punktacja as pkt
 
 def rozgrywka():
     """ Main function """
 
     pygame.init()
-    _ = design.Look()
+    _ = design.Look() #poradnik
+    _ = gra.Gra()
     board.uklad_poczatkowy()
     board.wyswietl()
     pkt.punkty_start()
