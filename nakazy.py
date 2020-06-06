@@ -18,6 +18,8 @@ def check_available_moves():
     #for ruch in hits_pawn:
         gra.Gra.available_moves.append(hits_pawn)
     #for ruch in hits_queen:
+        if hits_queen:
+            gra.Gra.available_moves.append(hits_queen)
     elif hits_queen:
         gra.Gra.available_moves.append(hits_queen)
     elif moves_pawn:
@@ -68,6 +70,7 @@ def pawn_hit():
     board.czytaj_figury()
 
     pion_mozliwe_bicia = []
+    path = []
 
     if gra.Gra.player == con.PLAYER_ONE:
         for pionek in gra.Gra.biale_piony:
@@ -90,7 +93,6 @@ def pawn_hit():
                                           pionek[0] - 2, pionek[1] + 2):
                 pion_mozliwe_bicia.append((pionek[0], pionek[1],
                                            pionek[0] - 2, pionek[1] + 2))
-
         return pion_mozliwe_bicia
 
     for pionek in gra.Gra.czarne_piony:
@@ -117,18 +119,76 @@ def pawn_hit():
     return pion_mozliwe_bicia
 
 
+def pawn_single_hit(row_start, column_start, path, plansza):
+    """ Making path of long hitting. """
+    if rules.sprawdz_bicie_pionka(row_start, column_start, row_start + 2, column_start + 2):
+        path.append((row_start, column_start, row_start + 2, column_start + 2))
+        move, plansza, remember_figure = simulate_pawn_hit((row_start, column_start,
+                                                   row_start + 2, column_start + 2), plansza)
+        pawn_single_hit(row_start + 2, column_start + 2, path, plansza)
+        plansza = back_simulated_pawn_hit(move, plansza, remember_figure)
+
+    if rules.sprawdz_bicie_pionka(row_start, column_start,
+                                    row_start + 2, column_start - 2):
+        path.append((row_start, column_start, row_start + 2, column_start - 2))
+        move, plansza, remember_figure  = simulate_pawn_hit((row_start, column_start,
+                                                    row_start + 2, column_start - 2), plansza)
+        pawn_single_hit(row_start + 2, column_start - 2, path, plansza)
+        plansza = back_simulated_pawn_hit(move, plansza, remember_figure)
+
+    if rules.sprawdz_bicie_pionka(row_start, column_start,
+                                    row_start - 2, column_start - 2):
+        path.append((row_start, column_start, row_start - 2, column_start - 2))
+        move, plansza, remember_figure  = simulate_pawn_hit((row_start, column_start,
+                                                    row_start - 2, column_start - 2), plansza)
+        pawn_single_hit(row_start - 2, column_start - 2, path, plansza)
+        plansza = back_simulated_pawn_hit(move, plansza, remember_figure)
+
+    if rules.sprawdz_bicie_pionka(row_start, column_start,
+                                    row_start - 2, column_start + 2):
+        path.append((row_start, column_start, row_start - 2, column_start + 2))
+        move, plansza, remember_figure  = simulate_pawn_hit((row_start, column_start,
+                                                    row_start - 2, column_start + 2), plansza)
+        pawn_single_hit(row_start - 2, column_start + 2, path, plansza)
+        plansza = back_simulated_pawn_hit(move, plansza, remember_figure)
+    return path
+
+
 
 def simulate_pawn_hit(move, plansza):
+    """ Simulating a pawn hit. """
     row_start, column_start, row_end, column_end = move
     between_row_points = (row_start + row_end) // 2
     between_column_points = (column_start + column_end) // 2
-
-    gra.Gra.plansza[row_start][column_start] = con.EMPTY_FIELD
+    if plansza[between_row_points][between_column_points] == con.WHITE_PAWN:
+        remember_figure = con.WHITE_PAWN
+    elif plansza[between_row_points][between_column_points] == con.BLACK_PAWN:
+        remember_figure = con.BLACK_PAWN
+    elif plansza[between_row_points][between_column_points] == con.WHITE_QUEEN:
+        remember_figure = con.WHITE_QUEEN
+    elif plansza[between_row_points][between_column_points] == con.BLACK_QUEEN:
+        remember_figure = con.BLACK_QUEEN
+    plansza[row_start][column_start] = con.EMPTY_FIELD
     plansza[between_row_points][between_column_points] = con.EMPTY_FIELD
     if gra.Gra.player == con.PLAYER_ONE:
-        plansza[move[2]][move[3]] = con.WHITE_PAWN
+        plansza[row_end][column_end] = con.WHITE_PAWN
     else:
-        plansza[move[2]][move[3]] = con.BLACK_PAWN
+        plansza[row_end][column_end] = con.BLACK_PAWN
+    return (row_start, column_start, row_end, column_end), plansza, remember_figure
+
+
+def back_simulated_pawn_hit(move, plansza, remember_figure):
+    """ Revoke changes done by simulate_pawn_hit. """
+    row_start, column_start, row_end, column_end = move
+    between_row_points = (row_start + row_end) // 2
+    between_column_points = (column_start + column_end) // 2
+    plansza[row_end][column_end] = con.EMPTY_FIELD
+    plansza[between_row_points][between_column_points] = remember_figure
+    if gra.Gra.player == con.PLAYER_ONE:
+        plansza[row_start][column_start] = con.WHITE_PAWN
+    else:
+        plansza[row_start][column_start] = con.BLACK_PAWN
+    return plansza
 
 def next_pawn_hit(row_start, column_start, row_before = 1, column_before = 0):
     """ Funkcja wykrywa kolejne mozliwe bicia juz posunietego piona """

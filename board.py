@@ -38,8 +38,8 @@ def uklad_poczatkowy():
             for column in range(1, con.SIZE, 2):
                 gra.Gra.plansza[row][column] = con.WHITE_PAWN
 
-    #gra.Gra.plansza[6][1] = con.WHITE_QUEEN
-    #gra.Gra.plansza[7][2] = con.WHITE_QUEEN
+    gra.Gra.plansza[6][1] = con.WHITE_QUEEN
+    gra.Gra.plansza[7][2] = con.WHITE_QUEEN
 
 
 def czytaj_figury():

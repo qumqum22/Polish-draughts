@@ -24,12 +24,18 @@ def ruch_gracza(row_start, column_start, row_end, column_end):
     ruch = (row_start, column_start, row_end, column_end)
     nakazy.check_available_moves()
     print(gra.Gra.available_moves)
-
+    pathh = []
+    planszaa = gra.Gra.plansza.copy()
+    pathh = nakazy.pawn_single_hit(row_start, column_start, pathh, planszaa)
+    print(pathh)
+    # przy dzialajacych liniach 27-30, nie dziala poprawnie bicie krolowa
     if sprawdz_pozycje(row_start, column_start) and sprawdz_pozycje(row_end, column_end):
         between_row_points = (row_start + row_end) // 2
         between_column_points = (column_start + column_end) // 2
         between = (between_row_points, between_column_points)
 
+        if ruch in gra.Gra.available_moves:
+            print("Jest OK")
         if gra.Gra.player == con.PLAYER_ONE:
             #Zapisywanie jaką figurą wykonuje ruch
             if gra.Gra.plansza[row_start][column_start] == con.WHITE_PAWN:
@@ -185,6 +191,7 @@ def service_pawn(move, between, figure):
         return True
     print("Ruch niedozwolony")
     return False
+
 
 def service_queen(move, figure):
     """OBSLUGA DAMKI. """
