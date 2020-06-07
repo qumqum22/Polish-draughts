@@ -29,7 +29,7 @@ def punktuj():
                 gra.Gra.punktacja[x_coord][y_coord] += 1
 
 
-punktuj()
+
 
 
 def wyswietl_punktacje():

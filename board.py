@@ -9,7 +9,7 @@ def wyswietl():
         print(i, "\t", gra.Gra.plansza[i])
         print('-------------------------------------------------------')
 
-    print("\n\t   a    b    c    d    e    f    g    h    i    j \n")
+    print("\n\t   0    1    2    3    4    5    6    7    8    9 \n")
 
 
 def uklad_czyszczenie():
@@ -85,6 +85,7 @@ def test_1():
 
     gra.Gra.plansza[5][2] = con.WHITE_PAWN
     gra.Gra.plansza[2][1] = con.BLACK_PAWN
+    #gra.Gra.plansza[2][3] = con.BLACK_QUEEN
     gra.Gra.plansza[2][3] = con.BLACK_PAWN
     gra.Gra.plansza[4][3] = con.BLACK_PAWN
     gra.Gra.plansza[4][1] = con.BLACK_PAWN
@@ -100,5 +101,3 @@ def test_3():
     gra.Gra.attack_from.clear()
     gra.Gra.plansza[5][6] = con.BLACK_QUEEN
     gra.Gra.plansza[6][5] = con.WHITE_PAWN
-
-

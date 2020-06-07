@@ -14,16 +14,20 @@ def rozgrywka():
     _ = gra.Gra()
     board.uklad_poczatkowy()
     board.wyswietl()
+    pkt.punktuj()
     pkt.punkty_start()
     pkt.wyswietl_punktacje()
     design.run_window()
 
-rozgrywka()
+
+if __name__ == "__main__":
+    rozgrywka()
+
+
+
+
+
 #funkcja ocen pozycje - liczy laczną pozycje gracza po ruchu pomocnicza do evaluate
 
-
 #UWAGI
-# pygame.kdasdas do maina wrzucic :!, stałe duzymi napisac
-# nie musze robic klas
 # rekurencyjne sprawdzanie skoku
-# tekst w sposob inny

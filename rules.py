@@ -19,16 +19,27 @@ def sprawdz_pozycje(x_coord, y_coord):
             return True
     return False
 
+
 def ruch_gracza(row_start, column_start, row_end, column_end):
     """ Moving a figure """
     ruch = (row_start, column_start, row_end, column_end)
     nakazy.check_available_moves()
     print(gra.Gra.available_moves)
-    pathh = []
+    #def pawn_single_hit(plansza, path, path_list):
+    path_list = []
+    gra.Gra.path.clear()
     planszaa = gra.Gra.plansza.copy()
-    pathh = nakazy.pawn_single_hit(row_start, column_start, pathh, planszaa)
-    print(pathh)
-    # przy dzialajacych liniach 27-30, nie dziala poprawnie bicie krolowa
+    nakazy.pawn_single_hit(planszaa, [(row_start, column_start)], path_list)
+    print('Local path: {}'.format(path_list))
+    max_len = 0
+    for path in path_list:
+        if len(path) >= max_len:
+            max_len = len(path)
+    print(max_len)
+    for i in range(len(path_list) - 1, -1, -1):
+        if len(path_list[i]) < max_len:
+            path_list.pop(i)
+    print(path_list)
     if sprawdz_pozycje(row_start, column_start) and sprawdz_pozycje(row_end, column_end):
         between_row_points = (row_start + row_end) // 2
         between_column_points = (column_start + column_end) // 2
@@ -77,11 +88,13 @@ def sprawdz_bicie_pionka(row_start, column_start, row_end, column_end):
         between_column_points = (column_start + column_end) // 2
         if gra.Gra.player == con.PLAYER_ONE:
             if gra.Gra.plansza[row_end][column_end] == con.EMPTY_FIELD:
-                if gra.Gra.plansza[between_row_points][between_column_points] in [con.BLACK_PAWN, con.BLACK_QUEEN]:
+                if gra.Gra.plansza[between_row_points][between_column_points] \
+                        in [con.BLACK_PAWN, con.BLACK_QUEEN]:
                     return True
         else:
             if gra.Gra.plansza[row_end][column_end] == con.EMPTY_FIELD:
-                if gra.Gra.plansza[between_row_points][between_column_points] in [con.WHITE_PAWN, con.WHITE_QUEEN]:
+                if gra.Gra.plansza[between_row_points][between_column_points] \
+                        in [con.WHITE_PAWN, con.WHITE_QUEEN]:
                     return True
     return False
 
