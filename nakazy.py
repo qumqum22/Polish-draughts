@@ -36,8 +36,7 @@ def check_available_moves():
 def pawn_move():
     """ Funkcja zwraca liste wszystkich mozliwych ruchow gracza. """
     board.czytaj_figury()
-    # zapamietac stan gry trzeba
-    # rekurencyjnie robic
+
     pion_mozliwe_ruchy_biale = []
     pion_mozliwe_ruchy_czarne = []
 
@@ -95,7 +94,31 @@ def pawn_hit():
     return pion_mozliwe_bicia
 
 
-def pawn_single_hit(plansza, path, path_list):
+def pawn_multi_hit(path_list):
+    """ Function returing the longest available hits. """
+    if gra.Gra.player == con.PLAYER_ONE:
+        for row_start, column_start in gra.Gra.biale_piony:
+            path = [(row_start, column_start)]
+            pawn_single_hit(path, path_list)
+    else:
+        for row_start, column_start in gra.Gra.czarne_piony:
+            path = [(row_start, column_start)]
+            pawn_single_hit(path, path_list)
+
+    print(path_list)
+    max_len = 0
+    for path in path_list:
+        if len(path) >= max_len:
+            max_len = len(path)
+
+    for i in range(len(path_list) - 1, -1, -1):
+        if len(path_list[i]) < max_len:
+            path_list.pop(i)
+
+    return path_list
+
+
+def pawn_single_hit(path, path_list):
     """ Making path of long hitting. """
     row_start, column_start = path[-1]
     for d_row in (-2, +2):
@@ -104,43 +127,42 @@ def pawn_single_hit(plansza, path, path_list):
             new_column = column_start + d_column
 
             if rules.sprawdz_bicie_pionka(row_start, column_start, new_row, new_column):
-                path = path[:]
-                path.append((new_row, new_column))
-                path_list.append(path)
+                path_copy = path[:]
+                path_copy.append((new_row, new_column))
+                path_list.append(path_copy)
+                board.wyswietl()
                 move = (row_start, column_start, new_row, new_column)
-                plansza, remember_figure, jumper = simulate_pawn_hit(move, plansza)
-                pawn_single_hit(plansza, path, path_list)
-                back_simulated_pawn_hit(move, plansza, remember_figure, jumper)
+                remember_figure, jumper = simulate_pawn_hit(move)   # executing a hit
+                pawn_single_hit(path_copy, path_list)
+                back_simulated_pawn_hit(move, remember_figure, jumper)  # back executed hit
 
 
-def simulate_pawn_hit(move, plansza):
+
+def simulate_pawn_hit(move):
     """ Simulating a pawn hit. """
     row_start, column_start, row_end, column_end = move
     between_row_points = (row_start + row_end) // 2
     between_column_points = (column_start + column_end) // 2
 
-    remember_figure = plansza[between_row_points][between_column_points]
-    jumper = plansza[row_start][column_start]
+    remember_figure = gra.Gra.plansza[between_row_points][between_column_points]
+    jumper = gra.Gra.plansza[row_start][column_start]
 
-    plansza[row_start][column_start] = con.EMPTY_FIELD
-    plansza[between_row_points][between_column_points] = con.EMPTY_FIELD
-    if gra.Gra.player == con.PLAYER_ONE:
-        plansza[row_end][column_end] = con.WHITE_PAWN
-    else:
-        plansza[row_end][column_end] = con.BLACK_PAWN
-    return plansza, remember_figure, jumper
+    gra.Gra.plansza[row_start][column_start] = con.EMPTY_FIELD
+    gra.Gra.plansza[between_row_points][between_column_points] = con.EMPTY_FIELD
+    gra.Gra.plansza[row_end][column_end] = jumper
+    return remember_figure, jumper
 
 
-def back_simulated_pawn_hit(move, plansza, remember_figure, jumper):
+def back_simulated_pawn_hit(move, remember_figure, jumper):
     """ Revoke changes done by simulate_pawn_hit. """
     row_start, column_start, row_end, column_end = move
     between_row_points = (row_start + row_end) // 2
     between_column_points = (column_start + column_end) // 2
-    plansza[row_end][column_end] = con.EMPTY_FIELD
-    plansza[between_row_points][between_column_points] = remember_figure
+    gra.Gra.plansza[row_end][column_end] = con.EMPTY_FIELD
+    gra.Gra.plansza[between_row_points][between_column_points] = remember_figure
 
-    plansza[row_start][column_start] = jumper
-    return plansza
+    gra.Gra.plansza[row_start][column_start] = jumper
+
 
 def next_pawn_hit(row_start, column_start):
     """ Funkcja wykrywa kolejne mozliwe bicia juz posunietego piona """
@@ -172,13 +194,13 @@ def queen_move():
         for skad in gra.Gra.biale_damki:
             for i in range(-9, 10, 1):
                 move_tuple = rules.sprawdz_ruch_damki(skad[0], skad[1],
-                                                      skad[0]+i, skad[1]+i)
+                                                      skad[0] + i, skad[1] + i)
                 if move_tuple[3]:
                     if not move_tuple[0]:
                         queen_mozliwe_ruchy_biale.append((skad[0], skad[1]))
 
                 move_tuple = rules.sprawdz_ruch_damki(skad[0], skad[1],
-                                                      skad[0]+i, skad[1] - i)
+                                                      skad[0] + i, skad[1] - i)
                 if move_tuple[3]:
                     if not move_tuple[0]:
                         queen_mozliwe_ruchy_biale.append((skad[0], skad[1]))

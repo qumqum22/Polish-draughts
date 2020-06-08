@@ -20,7 +20,7 @@ def rozgrywka():
     design.run_window()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     rozgrywka()
 
 

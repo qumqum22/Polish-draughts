@@ -25,21 +25,12 @@ def ruch_gracza(row_start, column_start, row_end, column_end):
     ruch = (row_start, column_start, row_end, column_end)
     nakazy.check_available_moves()
     print(gra.Gra.available_moves)
-    #def pawn_single_hit(plansza, path, path_list):
+
     path_list = []
-    gra.Gra.path.clear()
-    planszaa = gra.Gra.plansza.copy()
-    nakazy.pawn_single_hit(planszaa, [(row_start, column_start)], path_list)
-    print('Local path: {}'.format(path_list))
-    max_len = 0
-    for path in path_list:
-        if len(path) >= max_len:
-            max_len = len(path)
-    print(max_len)
-    for i in range(len(path_list) - 1, -1, -1):
-        if len(path_list[i]) < max_len:
-            path_list.pop(i)
-    print(path_list)
+
+    mozliwe = nakazy.pawn_multi_hit(path_list)
+    print('All max: {}'.format(mozliwe))
+
     if sprawdz_pozycje(row_start, column_start) and sprawdz_pozycje(row_end, column_end):
         between_row_points = (row_start + row_end) // 2
         between_column_points = (column_start + column_end) // 2
@@ -86,6 +77,7 @@ def sprawdz_bicie_pionka(row_start, column_start, row_end, column_end):
     if abs(row_end - row_start) == 2 and abs(column_start - column_end) == 2:
         between_row_points = (row_start + row_end) // 2
         between_column_points = (column_start + column_end) // 2
+
         if gra.Gra.player == con.PLAYER_ONE:
             if gra.Gra.plansza[row_end][column_end] == con.EMPTY_FIELD:
                 if gra.Gra.plansza[between_row_points][between_column_points] \
@@ -177,9 +169,6 @@ def service_pawn(move, between, figure):
             gra.Gra.plansza[row_end][column_end] = figure
 
             pkt.punkty_update(row_start, column_start, row_end, column_end)
-            ### Wynonanie fnkcji podobnej do ruch_gracza,
-            # ale parametr row/column_end staje sie poczatkowym,
-            # jesli nie ma takiego bicia, fałsz
 
             if nakazy.next_pawn_hit(row_end, column_end)[1]:
                 gra.Gra.attack_from.clear()
