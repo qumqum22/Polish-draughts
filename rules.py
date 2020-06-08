@@ -20,16 +20,32 @@ def sprawdz_pozycje(x_coord, y_coord):
     return False
 
 
+def select_available_moves(path_list):
+    max_len = 0
+    for path in path_list:
+        if len(path) >= max_len:
+            max_len = len(path)
+
+    for i in range(len(path_list) - 1, -1, -1):
+        if len(path_list[i]) < max_len:
+            path_list.pop(i)
+
 def ruch_gracza(row_start, column_start, row_end, column_end):
     """ Moving a figure """
     ruch = (row_start, column_start, row_end, column_end)
-    nakazy.check_available_moves()
-    print(gra.Gra.available_moves)
+
+    move_from = ((row_start, column_start))
+    move_dest = ((row_end, column_end))
 
     path_list = []
+    nakazy.check_available_moves(path_list)
 
-    mozliwe = nakazy.pawn_multi_hit(path_list)
-    print('All max: {}'.format(mozliwe))
+    print(path_list)
+
+    select_available_moves(path_list)
+
+
+    print('All max: {}'.format(path_list))
 
     if sprawdz_pozycje(row_start, column_start) and sprawdz_pozycje(row_end, column_end):
         between_row_points = (row_start + row_end) // 2

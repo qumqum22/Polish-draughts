@@ -168,6 +168,7 @@ def run_window():
                             gra.Gra.player = con.PLAYER_TWO
                         else:
                             gra.Gra.player = con.PLAYER_ONE
+                #gra.Gra.attack_from.clear()
                 board.wyswietl()
                 print(gra.Gra.biale)
                 print(gra.Gra.czarne)

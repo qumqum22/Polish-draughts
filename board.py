@@ -83,7 +83,8 @@ def test_1():
     gra.Gra.plansza[7][4] = con.WHITE_PAWN
     gra.Gra.plansza[7][6] = con.WHITE_PAWN
 
-    gra.Gra.plansza[5][2] = con.WHITE_PAWN
+    #gra.Gra.plansza[5][2] = con.WHITE_PAWN
+    gra.Gra.plansza[5][2] = con.WHITE_QUEEN
     gra.Gra.plansza[2][1] = con.BLACK_PAWN
     #gra.Gra.plansza[2][3] = con.BLACK_QUEEN
     gra.Gra.plansza[2][3] = con.BLACK_PAWN
