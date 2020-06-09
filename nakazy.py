@@ -8,6 +8,7 @@ import rules
 def check_available_moves(path_list):
     """ Making list of possible moves."""
     gra.Gra.available_moves.clear()
+    gra.Gra.path_list.clear()
     board.czytaj_figury()
 
     pawn_multi_hit(path_list)
@@ -20,8 +21,6 @@ def check_available_moves(path_list):
 
 def pawn_move(path_list):
     """ Funkcja zwraca liste wszystkich mozliwych ruchow gracza. """
-    board.czytaj_figury()
-
     if gra.Gra.player == con.PLAYER_ONE:
         for row_start, column_start in gra.Gra.biale_piony:
             path = []

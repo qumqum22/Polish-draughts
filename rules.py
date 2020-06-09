@@ -2,7 +2,6 @@
 import board
 import const as con
 import gra
-import nakazy
 import punktacja as pkt
 
 
@@ -21,6 +20,7 @@ def sprawdz_pozycje(x_coord, y_coord):
 
 
 def select_available_moves(path_list):
+    """ Selecting the longest available moves. """
     max_len = 0
     for path in path_list:
         if len(path) >= max_len:
@@ -30,58 +30,63 @@ def select_available_moves(path_list):
         if len(path_list[i]) < max_len:
             path_list.pop(i)
 
+
+# Czy funkcja minmax zlicza punkty przed ruchem, po ruchu i oblicza roznice : obojetne
+# Ma patrzec czasowo, na podstawie wyniku czasu mniejszej glebokosci
+
 def ruch_gracza(row_start, column_start, row_end, column_end):
     """ Moving a figure """
     ruch = (row_start, column_start, row_end, column_end)
+    move_from = (row_start, column_start)
 
-    move_from = ((row_start, column_start))
-    move_dest = ((row_end, column_end))
+    select_available_moves(gra.Gra.path_list)
 
-    path_list = []
-    nakazy.check_available_moves(path_list)
+    if not sprawdz_pozycje(row_start, column_start) and sprawdz_pozycje(row_end, column_end):
+        return False
 
-    print(path_list)
+    between_row_points = (row_start + row_end) // 2
+    between_column_points = (column_start + column_end) // 2
+    between = (between_row_points, between_column_points)
 
-    select_available_moves(path_list)
+    if gra.Gra.attack_from:
+        if sprawdz_pozycje(row_start, column_start) and sprawdz_pozycje(row_end, column_end):
+            for path in gra.Gra.path_list:
+                if path[1] == move_from and path[2] == (row_end, column_end):
+                    break
+            else:
+                return False
 
+        for path in gra.Gra.path_list:#in range(len(gra.Gra.path_list) - 1, -1, -1):
+            print('sprawdzam {}'.format(path))
+            if not path[1] == move_from:
+                gra.Gra.path_list.remove(path)
+            else:
+                path.pop(0)
 
-    print('All max: {}'.format(path_list))
+    print('All max: {}'.format(gra.Gra.path_list))
 
     if sprawdz_pozycje(row_start, column_start) and sprawdz_pozycje(row_end, column_end):
         between_row_points = (row_start + row_end) // 2
         between_column_points = (column_start + column_end) // 2
         between = (between_row_points, between_column_points)
-
-        if ruch in gra.Gra.available_moves:
-            print("Jest OK")
         if gra.Gra.player == con.PLAYER_ONE:
             #Zapisywanie jaką figurą wykonuje ruch
             if gra.Gra.plansza[row_start][column_start] == con.WHITE_PAWN:
                 figure = con.WHITE_PAWN
-                pion = 1
+                return service_pawn(ruch, between, figure, gra.Gra.path_list)
 
-            elif gra.Gra.plansza[row_start][column_start] == con.WHITE_QUEEN:
+            if gra.Gra.plansza[row_start][column_start] == con.WHITE_QUEEN:
                 figure = con.WHITE_QUEEN
-                pion = 0
-
-            else:
-                print("Ruch niedozwolonyyy")
-                return False
+                return service_queen(ruch, figure, gra.Gra.path_list)
         else:
             if gra.Gra.plansza[row_start][column_start] == con.BLACK_PAWN:
                 figure = con.BLACK_PAWN
-                pion = 1
+                return service_pawn(ruch, between, figure, gra.Gra.path_list)
 
-            elif gra.Gra.plansza[row_start][column_start] == con.BLACK_QUEEN:
+            if gra.Gra.plansza[row_start][column_start] == con.BLACK_QUEEN:
                 figure = con.BLACK_QUEEN
-                pion = 0
-            else:
-                print("Ruch niedozwolonyyy")
-                return False
+                return service_queen(ruch, figure, gra.Gra.path_list)
 
-        if pion:  # Prawda gdy figura to pionek
-            return service_pawn(ruch, between, figure)
-        return service_queen(ruch, figure)
     print("niepoprawne dane")
     return False
 
@@ -170,86 +175,62 @@ def sprawdz_mozliwosci_damki(ruch, lane, row_step, column_step):
 
     return 0, 0, 0, False, "Blad ruchu"
 
-def service_pawn(move, between, figure):
+
+def service_pawn(move, between, figure, path_list):
     """OBSLUGA PIONKA. """
     row_start, column_start, row_end, column_end = move
     between_row_points, between_column_points = between
-    if nakazy.pawn_hit():  # jesli istnieja bicia, musze je wykonac
-        if move in nakazy.pawn_hit():
+
+    for path_element in path_list:
+        if ((row_start, column_start), (row_end, column_end)) == (path_element[0], path_element[1]):
 
             gra.Gra.plansza[row_start][column_start] = con.EMPTY_FIELD
-
-            pkt.punkty_bicie_pionem(move)
-
             gra.Gra.plansza[between_row_points][between_column_points] = con.EMPTY_FIELD
+            if abs(row_end - row_start) == 2:
+                pkt.punkty_bicie_pionem(move)
             gra.Gra.plansza[row_end][column_end] = figure
-
             pkt.punkty_update(row_start, column_start, row_end, column_end)
 
-            if nakazy.next_pawn_hit(row_end, column_end)[1]:
+            if len(path_element) > 2:
                 gra.Gra.attack_from.clear()
-                gra.Gra.attack_from.append(row_end)
-                gra.Gra.attack_from.append(column_end)
+                gra.Gra.attack_from.append(path_element[1])
+                print(gra.Gra.attack_from)
                 return False
             board.wyniesienie(row_end, column_end)
             gra.Gra.attack_from.clear()
             return True
-        return False
-
-    if nakazy.queen_hit():
-        print("Krolowa moze bic")
-        return False
-
-    if move in nakazy.pawn_move():
-        gra.Gra.plansza[row_start][column_start] = con.EMPTY_FIELD
-        gra.Gra.plansza[row_end][column_end] = figure
-        pkt.punkty_update(row_start, column_start, row_end, column_end)
-        board.wyniesienie(row_end, column_end)
-        gra.Gra.attack_from.clear()
-        return True
     print("Ruch niedozwolony")
     return False
 
 
-def service_queen(move, figure):
+def service_queen(move, figure, path_list):
     """OBSLUGA DAMKI. """
     row_start, column_start, row_end, column_end = move
-    if not (row_start, column_start, row_end, column_end) in nakazy.queen_hit():
-        if nakazy.pawn_hit():
-            print("Musisz bic pionem")
-            return False
-        if nakazy.queen_hit():
-            print("Musisz bic krolowa")
-            return False
 
-    krotka = sprawdz_ruch_damki(row_start, column_start, row_end, column_end)
+    for path_element in path_list:
+        if ((row_start, column_start), (row_end, column_end)) == (path_element[0], path_element[1]):
 
-    if krotka[3]:  # Prawda/fałsz  ruch prawidłowy / ruch nieprawidłowy
-        if krotka[0] == 1:  # Prawda/ fałsz     Bicie / zwykly ruch
-            gra.Gra.plansza[row_start][column_start] = con.EMPTY_FIELD
+            krotka = sprawdz_ruch_damki(row_start, column_start, row_end, column_end)
 
-            pkt.punkty_bicie_damka(krotka)
+            if krotka[0] == 1:  # Prawda/ fałsz     Bicie / zwykly ruch
+                gra.Gra.plansza[row_start][column_start] = con.EMPTY_FIELD
 
-            gra.Gra.plansza[krotka[1]][krotka[2]] = con.EMPTY_FIELD
-            gra.Gra.plansza[row_end][column_end] = figure
+                pkt.punkty_bicie_damka(krotka)
 
-            if nakazy.next_queen_hit(row_end, column_end):
-                gra.Gra.attack_from.clear()
-                pkt.punkty_update(row_start, column_start, row_end, column_end)
-                gra.Gra.attack_from.append(row_end)
-                gra.Gra.attack_from.append(column_end)
-                return False
+                gra.Gra.plansza[krotka[1]][krotka[2]] = con.EMPTY_FIELD
+                gra.Gra.plansza[row_end][column_end] = figure
 
-        elif (row_start, column_start, row_end, column_end) in nakazy.queen_hit():
-            print("Musisz bic")
-            return False
-        else:
-            gra.Gra.plansza[row_start][column_start] = con.EMPTY_FIELD
-            gra.Gra.plansza[row_end][column_end] = figure
-    else:
-        print(krotka[4])
-        return False
-    board.wyniesienie(row_end, column_end)
-    pkt.punkty_update(row_start, column_start, row_end, column_end)
-    gra.Gra.attack_from.clear()
-    return True
+                if len(path_element) > 2:
+                    gra.Gra.attack_from.clear()
+                    gra.Gra.attack_from.append(path_element[1])
+                    pkt.punkty_update(row_start, column_start, row_end, column_end)
+                    print(gra.Gra.attack_from)
+                    return False
+            else:
+                gra.Gra.plansza[row_start][column_start] = con.EMPTY_FIELD
+                gra.Gra.plansza[row_end][column_end] = figure
+
+            pkt.punkty_update(row_start, column_start, row_end, column_end)
+            gra.Gra.attack_from.clear()
+            return True
+    return False

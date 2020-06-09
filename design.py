@@ -5,6 +5,7 @@ import board
 import button
 import const as con
 import gra
+import nakazy
 import punktacja as pkt
 import rules
 
@@ -143,32 +144,41 @@ def run_window():
 
                 #OBSŁUGA RUCHÓW
                 if gra.Gra.player == con.PLAYER_ONE:
-                    print(start_x, start_y, end_x, end_y)
+                    print('Biale, proba z: {},{} na {},{}'.format(start_x, start_y, end_x, end_y))
                     if gra.Gra.attack_from:
-                        if not rules.ruch_gracza(gra.Gra.attack_from[0], gra.Gra.attack_from[1],
+                        print('Kolejny ruch tego samego gracza')
+
+                        if not rules.ruch_gracza(gra.Gra.attack_from[0][0], gra.Gra.attack_from[0][1],
                                                  end_y, end_x):
                             gra.Gra.player = con.PLAYER_ONE
                         else:
                             gra.Gra.player = con.PLAYER_TWO
 
                     else:
+                        gra.Gra.attack_from.clear()
+                        nakazy.check_available_moves(gra.Gra.path_list)
+
                         if not rules.ruch_gracza(start_y, start_x, end_y, end_x):
                             gra.Gra.player = con.PLAYER_ONE
                         else:
                             gra.Gra.player = con.PLAYER_TWO
                 else:
+                    print('Czarne, proba z: {},{} na {},{}'.format(start_x, start_y, end_x, end_y))
                     if gra.Gra.attack_from:
-                        if not rules.ruch_gracza(gra.Gra.attack_from[0], gra.Gra.attack_from[1], 
+                        print('Kolejny ruch tego samego gracza')
+                        if not rules.ruch_gracza(gra.Gra.attack_from[0][0], gra.Gra.attack_from[0][1],
                                                  end_y, end_x):
                             gra.Gra.player = con.PLAYER_TWO
                         else:
                             gra.Gra.player = con.PLAYER_ONE
                     else:
+                        gra.Gra.attack_from.clear()
+                        nakazy.check_available_moves(gra.Gra.path_list)
+
                         if not rules.ruch_gracza(start_y, start_x, end_y, end_x):
                             gra.Gra.player = con.PLAYER_TWO
                         else:
                             gra.Gra.player = con.PLAYER_ONE
-                #gra.Gra.attack_from.clear()
                 board.wyswietl()
                 print(gra.Gra.biale)
                 print(gra.Gra.czarne)
@@ -192,10 +202,10 @@ def run_window():
                                                             con.PLANSZA_Y + i * con.BOARD/con.SIZE))
 
         #INFORMACJA CZYJ RUCH / KTO WYGRAL
-        if gra.Gra.biale == 0 or not gra.Gra.available_moves:
+        if gra.Gra.biale == 0:# or not gra.Gra.available_moves:
             Look.show_move("WYGRAŁY CZARNE", Look.textX, Look.textY)
 
-        elif gra.Gra.czarne == 0 or not gra.Gra.available_moves:
+        elif gra.Gra.czarne == 0:# or not gra.Gra.available_moves:
             Look.show_move("WYGRAŁY BIAŁE", Look.textX, Look.textY)
 
         elif gra.Gra.player == con.PLAYER_ONE:
