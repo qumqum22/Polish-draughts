@@ -1,12 +1,12 @@
 """ Module of design. """
 import pygame
 
-import board
+import chessboard
 import button
 import const as con
-import gra
-import nakazy
-import punktacja as pkt
+import game
+import moves
+import score as pkt
 import rules
 
 
@@ -16,7 +16,7 @@ class Look:
         Look.screen = pygame.display.set_mode((con.WIDTH, con.HEIGHT), pygame.RESIZABLE)
         # nazwa gry
         pygame.display.set_caption("szachy stupolowe", "szachy stupolowe")
-        # plansza
+        # board
         Look.plansza_img = pygame.image.load("assets/board.jpg")
         # gracz
         Look.white_pawn_img = pygame.image.load("assets/white_pawn_32px.png")
@@ -31,17 +31,18 @@ class Look:
 
         #Tworzenie przyciskow
         Look.restart_button \
-            = button.Button(con.BUTTON_LIME, (con.PLANSZA_X+con.BOARD + con.BOARD/con.SIZE+2,
-                                              con.PLANSZA_Y+2), (100, 50), "Restart")
+            = button.Button(con.BUTTON_LIME, (con.BOARD_X + con.BOARD + con.BOARD / con.SIZE + 2,
+                                              con.BOARD_Y + 2), con.BUTTON_PROP, "Restart")
         Look.test_bicie_button \
             = button.Button(con.BUTTON_LIME, (con.WIDTH/100, con.HEIGHT/100),
-                            (150, 50), "Test bicia")
+                            con.BUTTON_PROP, "Test bicia")
         Look.test_promo_button \
-            = button.Button(con.BUTTON_LIME, (con.WIDTH / 100, 2 * con.HEIGHT / 100 +
-                                              50), (150, 50), "Test wyniesienia")
+            = button.Button(con.BUTTON_LIME, (con.WIDTH / 100, 2 * con.HEIGHT / 100 + 50),
+                            con.BUTTON_PROP, "Test wyniesienia")
         Look.test_wygrana_button \
-            = button.Button(con.BUTTON_LIME, (con.WIDTH/100, 3*con.HEIGHT/100+100),
-                            (150, 50), "Test wygranej")
+            = button.Button(con.BUTTON_LIME, (con.WIDTH/100, 3 * con.HEIGHT/100 + 100),
+                            con.BUTTON_PROP, "Test wygranej")
+
         # ikona gry
         icon = pygame.image.load("assets/icon_32px.png")
         pygame.display.set_icon(icon)
@@ -80,34 +81,33 @@ class Look:
         """ SERVICING TESTS. """
         # PRZYCISK RESTARTU
         if Look.restart_button.is_over(start_x, start_y):
-            gra.Gra.czyszczenie_zmiennych()
-            board.uklad_czyszczenie()
-            board.uklad_poczatkowy()
-            board.wyswietl()
-            pkt.punkty_start()
+            game.Game.reload_variables()
+            chessboard.uklad_czyszczenie()
+            chessboard.uklad_poczatkowy()
+            chessboard.wyswietl()
+            pkt.points_load()
 
         # PRZYCISKI TESTOW
         if Look.test_bicie_button.is_over(start_x, start_y):
-            gra.Gra.czyszczenie_zmiennych()
-            board.uklad_czyszczenie()
-            board.test_1()
-            board.wyswietl()
-            pkt.punkty_start()
+            game.Game.reload_variables()
+            chessboard.uklad_czyszczenie()
+            chessboard.test_1()
+            chessboard.wyswietl()
+            pkt.points_load()
 
         if Look.test_promo_button.is_over(start_x, start_y):
-            gra.Gra.czyszczenie_zmiennych()
-            board.uklad_czyszczenie()
-            board.test_2()
-            board.wyswietl()
-            pkt.punkty_start()
+            game.Game.reload_variables()
+            chessboard.uklad_czyszczenie()
+            chessboard.test_2()
+            chessboard.wyswietl()
+            pkt.points_load()
 
         if Look.test_wygrana_button.is_over(start_x, start_y):
-            gra.Gra.czyszczenie_zmiennych()
-            board.uklad_czyszczenie()
-            board.test_3()
-            board.wyswietl()
-            pkt.punkty_start()
-
+            game.Game.reload_variables()
+            chessboard.uklad_czyszczenie()
+            chessboard.test_3()
+            chessboard.wyswietl()
+            pkt.points_load()
 
 
 def run_window():
@@ -133,89 +133,86 @@ def run_window():
                 #OBSLUGA PRZYCISKOW
                 Look.service_of_tests(start_x, start_y)
                 #ODCZYT POLOZENIA POCZATKOWEGO MYSZKI
-                start_x = int((start_x - con.PLANSZA_X)/con.FIELD)
-                start_y = int((start_y - con.PLANSZA_Y)/con.FIELD)
+                start_x = int((start_x - con.BOARD_X) / con.FIELD)
+                start_y = int((start_y - con.BOARD_Y) / con.FIELD)
 
             #ODCZYT POLOZENIA KONCOWEGO MYSZKI
             if event.type == pygame.MOUSEBUTTONUP:
                 end_x, end_y = pygame.mouse.get_pos()
-                end_x = int((end_x - con.PLANSZA_X) / con.FIELD)
-                end_y = int((end_y - con.PLANSZA_Y) / con.FIELD)
+                end_x = int((end_x - con.BOARD_X) / con.FIELD)
+                end_y = int((end_y - con.BOARD_Y) / con.FIELD)
 
                 #OBSŁUGA RUCHÓW
-                if gra.Gra.player == con.PLAYER_ONE:
-                    print('Biale, proba z: {},{} na {},{}'.format(start_x, start_y, end_x, end_y))
-                    if gra.Gra.attack_from:
-                        print('Kolejny ruch tego samego gracza')
+                if game.Game.player == con.PLAYER_ONE:
 
-                        if not rules.ruch_gracza(gra.Gra.attack_from[0][0], gra.Gra.attack_from[0][1],
-                                                 end_y, end_x):
-                            gra.Gra.player = con.PLAYER_ONE
+                    #print('Ruch: {} {} , {} {}'.format(start_y, start_x, end_y, end_x))
+                    if game.Game.attack_from:
+                        #print('Kolejny ruch tego samego gracza')
+
+                        if not rules.player_move(game.Game.attack_from[0][0],
+                                                 game.Game.attack_from[0][1], end_y, end_x):
+                            game.Game.player = con.PLAYER_ONE
                         else:
-                            gra.Gra.player = con.PLAYER_TWO
+                            game.Game.player = con.PLAYER_TWO
 
                     else:
-                        gra.Gra.attack_from.clear()
-                        nakazy.check_available_moves(gra.Gra.path_list)
+                        game.Game.attack_from.clear()
+                        moves.check_available_moves(game.Game.path_list, game.Game.path_points)
 
-                        if not rules.ruch_gracza(start_y, start_x, end_y, end_x):
-                            gra.Gra.player = con.PLAYER_ONE
+                        if not rules.player_move(start_y, start_x, end_y, end_x):
+                            game.Game.player = con.PLAYER_ONE
                         else:
-                            gra.Gra.player = con.PLAYER_TWO
+                            game.Game.player = con.PLAYER_TWO
                 else:
-                    print('Czarne, proba z: {},{} na {},{}'.format(start_x, start_y, end_x, end_y))
-                    if gra.Gra.attack_from:
-                        print('Kolejny ruch tego samego gracza')
-                        if not rules.ruch_gracza(gra.Gra.attack_from[0][0], gra.Gra.attack_from[0][1],
-                                                 end_y, end_x):
-                            gra.Gra.player = con.PLAYER_TWO
+                    #print('Ruch: {} {} , {} {}'.format(start_y, start_x, end_y, end_x))
+                    if game.Game.attack_from:
+                        #print('Kolejny ruch tego samego gracza')
+                        if not rules.player_move(game.Game.attack_from[0][0],
+                                                 game.Game.attack_from[0][1], end_y, end_x):
+                            game.Game.player = con.PLAYER_TWO
                         else:
-                            gra.Gra.player = con.PLAYER_ONE
+                            game.Game.player = con.PLAYER_ONE
                     else:
-                        gra.Gra.attack_from.clear()
-                        nakazy.check_available_moves(gra.Gra.path_list)
+                        game.Game.attack_from.clear()
+                        moves.check_available_moves(game.Game.path_list, game.Game.path_points)
 
-                        if not rules.ruch_gracza(start_y, start_x, end_y, end_x):
-                            gra.Gra.player = con.PLAYER_TWO
+                        if not rules.player_move(start_y, start_x, end_y, end_x):
+                            game.Game.player = con.PLAYER_TWO
                         else:
-                            gra.Gra.player = con.PLAYER_ONE
-                board.wyswietl()
-                print(gra.Gra.biale)
-                print(gra.Gra.czarne)
+                            game.Game.player = con.PLAYER_ONE
+                #board.wyswietl()
+                #print('Punkty bialych: {}'.format(gra.Game.white_score))
+                #print('Punkty czarnych: {}'.format(gra.Game.black_score))
 
         #RYSOWANIE SZACHOWNICY
-        Look.screen.blit(Look.plansza_img, (con.PLANSZA_X, con.PLANSZA_Y))
+        Look.screen.blit(Look.plansza_img, (con.BOARD_X, con.BOARD_Y))
 
         for i in range(10):
             for j in range(10):
-                if gra.Gra.plansza[i][j] == con.WHITE_PAWN:
-                    Look.screen.blit(Look.white_pawn_img, (con.PLANSZA_X + j*con.BOARD/con.SIZE,
-                                                           con.PLANSZA_Y + i * con.BOARD/con.SIZE))
-                elif gra.Gra.plansza[i][j] == con.BLACK_PAWN:
-                    Look.screen.blit(Look.black_pawn_img, (con.PLANSZA_X + j*con.BOARD/con.SIZE,
-                                                           con.PLANSZA_Y + i * con.BOARD/con.SIZE))
-                elif gra.Gra.plansza[i][j] == con.WHITE_QUEEN:
-                    Look.screen.blit(Look.white_queen_img, (con.PLANSZA_X + j*con.BOARD/con.SIZE,
-                                                            con.PLANSZA_Y + i * con.BOARD/con.SIZE))
-                elif gra.Gra.plansza[i][j] == con.BLACK_QUEEN:
-                    Look.screen.blit(Look.black_queen_img, (con.PLANSZA_X + j*con.BOARD/con.SIZE,
-                                                            con.PLANSZA_Y + i * con.BOARD/con.SIZE))
+                if game.Game.board[i][j] == con.WHITE_PAWN:
+                    Look.screen.blit(Look.white_pawn_img, (con.BOARD_X + j * con.BOARD / con.SIZE,
+                                                           con.BOARD_Y + i * con.BOARD / con.SIZE))
+                elif game.Game.board[i][j] == con.BLACK_PAWN:
+                    Look.screen.blit(Look.black_pawn_img, (con.BOARD_X + j * con.BOARD / con.SIZE,
+                                                           con.BOARD_Y + i * con.BOARD / con.SIZE))
+                elif game.Game.board[i][j] == con.WHITE_QUEEN:
+                    Look.screen.blit(Look.white_queen_img, (con.BOARD_X + j * con.BOARD / con.SIZE,
+                                                            con.BOARD_Y + i * con.BOARD / con.SIZE))
+                elif game.Game.board[i][j] == con.BLACK_QUEEN:
+                    Look.screen.blit(Look.black_queen_img, (con.BOARD_X + j * con.BOARD / con.SIZE,
+                                                            con.BOARD_Y + i * con.BOARD / con.SIZE))
 
         #INFORMACJA CZYJ RUCH / KTO WYGRAL
-        if gra.Gra.biale == 0:# or not gra.Gra.available_moves:
-            Look.show_move("WYGRAŁY CZARNE", Look.textX, Look.textY)
+        if game.Game.white_score == 0:
+            Look.show_move("BLACK WON", Look.textX, Look.textY)
 
-        elif gra.Gra.czarne == 0:# or not gra.Gra.available_moves:
-            Look.show_move("WYGRAŁY BIAŁE", Look.textX, Look.textY)
+        elif game.Game.black_score == 0:
+            Look.show_move("WHITE WON", Look.textX, Look.textY)
 
-        elif gra.Gra.player == con.PLAYER_ONE:
-            Look.show_move("Tura: białe", Look.textX, Look.textY)
+        elif game.Game.player == con.PLAYER_ONE:
+            Look.show_move("Round: White", Look.textX, Look.textY)
         else:
-            Look.show_move("Tura: czarne", Look.textX, Look.textY)
-        #elif gra.Gra.gracz == 1:
-        #    Look.show_move("Tura: białe", Look.textX, Look.textY)
-        #else:
-        #    Look.show_move("Tura: czarne", Look.textX, Look.textY)
+            Look.show_move("Round: Black", Look.textX, Look.textY)
 
         Look.restart_button.draw(Look.screen, (0, 0, 0))
         Look.test_bicie_button.draw(Look.screen, (0, 0, 0))

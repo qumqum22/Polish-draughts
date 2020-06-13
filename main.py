@@ -1,33 +1,24 @@
 """ Main module. """
 import pygame
 
-import board
+import chessboard
 import design
-import gra
-import punktacja as pkt
+import game
+import score as pkt
 
-def rozgrywka():
+def draughts():
     """ Main function """
 
     pygame.init()
     _ = design.Look() #poradnik
-    _ = gra.Gra()
-    board.uklad_poczatkowy()
-    board.wyswietl()
+    _ = game.Game()
+    chessboard.uklad_poczatkowy()
+    chessboard.wyswietl()
     pkt.punktuj()
-    pkt.punkty_start()
-    pkt.wyswietl_punktacje()
+    pkt.points_load()
+    #pkt.wyswietl_punktacje()
     design.run_window()
 
 
 if __name__ == '__main__':
-    rozgrywka()
-
-
-
-
-
-#funkcja ocen pozycje - liczy laczną pozycje gracza po ruchu pomocnicza do evaluate
-
-#UWAGI
-# rekurencyjne sprawdzanie skoku
+    draughts()
