@@ -2,11 +2,12 @@
 import pygame
 
 import chessboard
+import computer
 import button
 import const as con
 import game
 import moves
-import score as pkt
+import score
 import rules
 
 
@@ -33,13 +34,13 @@ class Look:
         Look.restart_button \
             = button.Button(con.BUTTON_LIME, (con.BOARD_X + con.BOARD + con.BOARD / con.SIZE + 2,
                                               con.BOARD_Y + 2), con.BUTTON_PROP, "Restart")
-        Look.test_bicie_button \
+        Look.test_hit_button \
             = button.Button(con.BUTTON_LIME, (con.WIDTH/100, con.HEIGHT/100),
                             con.BUTTON_PROP, "Test bicia")
         Look.test_promo_button \
             = button.Button(con.BUTTON_LIME, (con.WIDTH / 100, 2 * con.HEIGHT / 100 + 50),
                             con.BUTTON_PROP, "Test wyniesienia")
-        Look.test_wygrana_button \
+        Look.test_win_button \
             = button.Button(con.BUTTON_LIME, (con.WIDTH/100, 3 * con.HEIGHT/100 + 100),
                             con.BUTTON_PROP, "Test wygranej")
 
@@ -61,20 +62,20 @@ class Look:
         else:
             Look.restart_button.color = con.BUTTON_LIME
 
-        if Look.test_bicie_button.is_over(mouse_pos[0], mouse_pos[1]):
-            Look.test_bicie_button.color = con.BUTTON_RED
+        if Look.test_hit_button.is_over(mouse_pos[0], mouse_pos[1]):
+            Look.test_hit_button.color = con.BUTTON_RED
         else:
-            Look.test_bicie_button.color = con.BUTTON_LIME
+            Look.test_hit_button.color = con.BUTTON_LIME
 
         if Look.test_promo_button.is_over(mouse_pos[0], mouse_pos[1]):
             Look.test_promo_button.color = con.BUTTON_RED
         else:
             Look.test_promo_button.color = con.BUTTON_LIME
 
-        if Look.test_wygrana_button.is_over(mouse_pos[0], mouse_pos[1]):
-            Look.test_wygrana_button.color = con.BUTTON_RED
+        if Look.test_win_button.is_over(mouse_pos[0], mouse_pos[1]):
+            Look.test_win_button.color = con.BUTTON_RED
         else:
-            Look.test_wygrana_button.color = con.BUTTON_LIME
+            Look.test_win_button.color = con.BUTTON_LIME
 
     @staticmethod
     def service_of_tests(start_x, start_y):
@@ -82,32 +83,34 @@ class Look:
         # PRZYCISK RESTARTU
         if Look.restart_button.is_over(start_x, start_y):
             game.Game.reload_variables()
-            chessboard.uklad_czyszczenie()
-            chessboard.uklad_poczatkowy()
-            chessboard.wyswietl()
-            pkt.points_load()
+            chessboard.clear_chessboard()
+            chessboard.set_game()
+            chessboard.show_board()
+            score.points_load()
 
         # PRZYCISKI TESTOW
-        if Look.test_bicie_button.is_over(start_x, start_y):
+        if Look.test_hit_button.is_over(start_x, start_y):
             game.Game.reload_variables()
-            chessboard.uklad_czyszczenie()
+            chessboard.clear_chessboard()
             chessboard.test_1()
-            chessboard.wyswietl()
-            pkt.points_load()
+            chessboard.show_board()
+            score.points_load()
+
 
         if Look.test_promo_button.is_over(start_x, start_y):
             game.Game.reload_variables()
-            chessboard.uklad_czyszczenie()
+            chessboard.clear_chessboard()
             chessboard.test_2()
-            chessboard.wyswietl()
-            pkt.points_load()
+            chessboard.show_board()
+            score.points_load()
 
-        if Look.test_wygrana_button.is_over(start_x, start_y):
+
+        if Look.test_win_button.is_over(start_x, start_y):
             game.Game.reload_variables()
-            chessboard.uklad_czyszczenie()
+            chessboard.clear_chessboard()
             chessboard.test_3()
-            chessboard.wyswietl()
-            pkt.points_load()
+            chessboard.show_board()
+            score.points_load()
 
 
 def run_window():
@@ -142,13 +145,11 @@ def run_window():
                 end_x = int((end_x - con.BOARD_X) / con.FIELD)
                 end_y = int((end_y - con.BOARD_Y) / con.FIELD)
 
+
                 #OBSŁUGA RUCHÓW
                 if game.Game.player == con.PLAYER_ONE:
 
-                    #print('Ruch: {} {} , {} {}'.format(start_y, start_x, end_y, end_x))
                     if game.Game.attack_from:
-                        #print('Kolejny ruch tego samego gracza')
-
                         if not rules.player_move(game.Game.attack_from[0][0],
                                                  game.Game.attack_from[0][1], end_y, end_x):
                             game.Game.player = con.PLAYER_ONE
@@ -164,9 +165,7 @@ def run_window():
                         else:
                             game.Game.player = con.PLAYER_TWO
                 else:
-                    #print('Ruch: {} {} , {} {}'.format(start_y, start_x, end_y, end_x))
                     if game.Game.attack_from:
-                        #print('Kolejny ruch tego samego gracza')
                         if not rules.player_move(game.Game.attack_from[0][0],
                                                  game.Game.attack_from[0][1], end_y, end_x):
                             game.Game.player = con.PLAYER_TWO
@@ -180,9 +179,7 @@ def run_window():
                             game.Game.player = con.PLAYER_TWO
                         else:
                             game.Game.player = con.PLAYER_ONE
-                #board.wyswietl()
-                #print('Punkty bialych: {}'.format(gra.Game.white_score))
-                #print('Punkty czarnych: {}'.format(gra.Game.black_score))
+
 
         #RYSOWANIE SZACHOWNICY
         Look.screen.blit(Look.plansza_img, (con.BOARD_X, con.BOARD_Y))
@@ -202,7 +199,7 @@ def run_window():
                     Look.screen.blit(Look.black_queen_img, (con.BOARD_X + j * con.BOARD / con.SIZE,
                                                             con.BOARD_Y + i * con.BOARD / con.SIZE))
 
-        #INFORMACJA CZYJ RUCH / KTO WYGRAL
+        # Text above a chessboard
         if game.Game.white_score == 0:
             Look.show_move("BLACK WON", Look.textX, Look.textY)
 
@@ -215,7 +212,7 @@ def run_window():
             Look.show_move("Round: Black", Look.textX, Look.textY)
 
         Look.restart_button.draw(Look.screen, (0, 0, 0))
-        Look.test_bicie_button.draw(Look.screen, (0, 0, 0))
+        Look.test_hit_button.draw(Look.screen, (0, 0, 0))
         Look.test_promo_button.draw(Look.screen, (0, 0, 0))
-        Look.test_wygrana_button.draw(Look.screen, (0, 0, 0))
-        pygame.display.update()     # pokazanie gotowego rysunku gry
+        Look.test_win_button.draw(Look.screen, (0, 0, 0))
+        pygame.display.update()

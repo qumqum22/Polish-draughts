@@ -1,16 +1,17 @@
-""" Functions resposible for checking available moves. """
+""" Functions responsible for checking available moves. """
 import chessboard
 import const as con
 import game
 import rules
-import score as pkt
+import score
+
 
 def check_available_moves(path_list, path_points):
     """ Making list of possible moves."""
     game.Game.available_moves.clear()
     game.Game.path_list.clear()
     game.Game.path_points.clear()
-    chessboard.czytaj_figury()
+    chessboard.read_figures()
 
     pawn_multi_hit(path_list, path_points)
     queen_multi_hit(path_list, path_points)
@@ -21,53 +22,36 @@ def check_available_moves(path_list, path_points):
 
 
 def pawn_move(path_list):
-    """ Funkcja zwraca liste wszystkich mozliwych ruchow gracza. """
+    """ Function is creating list of all possible player moves . """
     if game.Game.player == con.PLAYER_ONE:
         for row_start, column_start in game.Game.white_pawns:
-            path = []
-            if rules.check_position(row_start - 1, column_start + 1):
-                if game.Game.board[row_start - 1][column_start + 1] == con.EMPTY_FIELD:
-                    path.append((row_start, column_start))
-                    path.append((row_start-1, column_start+1))
-                    path_list.append(path)
-                    pkt.update_points(row_start, column_start, row_start - 1, column_start + 1)
-                    game.Game.path_points.append(game.Game.white_score - game.Game.black_score)
-                    pkt.cancel_update_points(row_start - 1, column_start + 1,
-                                             row_start, column_start)
-            path = []
-
-            if rules.check_position(row_start - 1, column_start - 1):
-                if game.Game.board[row_start - 1][column_start - 1] == con.EMPTY_FIELD:
-                    path.append((row_start, column_start))
-                    path.append((row_start - 1, column_start - 1))
-                    path_list.append(path)
-                    pkt.update_points(row_start, column_start, row_start - 1, column_start - 1)
-                    game.Game.path_points.append(game.Game.white_score - game.Game.black_score)
-                    pkt.cancel_update_points(row_start - 1, column_start - 1,
-                                             row_start, column_start)
+            for d_column in [-1, 1]:
+                path = []
+                if rules.check_position(row_start - 1, column_start + d_column):
+                    if game.Game.board[row_start - 1][column_start + d_column] == con.EMPTY_FIELD:
+                        path.append((row_start, column_start))
+                        path.append((row_start-1, column_start+d_column))
+                        path_list.append(path)
+                        score.update_points(row_start, column_start, row_start - 1,
+                                          column_start + d_column)
+                        game.Game.path_points.append(game.Game.white_score - game.Game.black_score)
+                        score.cancel_update_points(row_start - 1, column_start + d_column,
+                                                 row_start, column_start)
     else:
         for row_start, column_start in game.Game.black_pawns:
-            path = []
-            if rules.check_position(row_start + 1, column_start + 1):
-                if game.Game.board[row_start + 1][column_start + 1] == con.EMPTY_FIELD:
-                    path.append((row_start, column_start))
-                    path.append((row_start + 1, column_start + 1))
-                    path_list.append(path)
-                    pkt.update_points(row_start, column_start, row_start + 1, column_start + 1)
-                    game.Game.path_points.append(game.Game.white_score - game.Game.black_score)
-                    pkt.cancel_update_points(row_start + 1, column_start + 1,
-                                             row_start, column_start)
+            for d_column in [-1, 1]:
+                path = []
+                if rules.check_position(row_start + 1, column_start + d_column):
+                    if game.Game.board[row_start + 1][column_start + d_column] == con.EMPTY_FIELD:
+                        path.append((row_start, column_start))
+                        path.append((row_start + 1, column_start + d_column))
+                        path_list.append(path)
+                        score.update_points(row_start, column_start, row_start + 1,
+                                          column_start + d_column)
+                        game.Game.path_points.append(game.Game.white_score - game.Game.black_score)
+                        score.cancel_update_points(row_start + 1, column_start + d_column,
+                                                 row_start, column_start)
 
-            path = []
-            if rules.check_position(row_start + 1, column_start - 1):
-                if game.Game.board[row_start + 1][column_start - 1] == con.EMPTY_FIELD:
-                    path.append((row_start, column_start))
-                    path.append((row_start + 1, column_start - 1))
-                    path_list.append(path)
-                    pkt.update_points(row_start, column_start, row_start + 1, column_start - 1)
-                    game.Game.path_points.append(game.Game.white_score - game.Game.black_score)
-                    pkt.cancel_update_points(row_start + 1, column_start - 1,
-                                             row_start, column_start)
 
 
 def pawn_multi_hit(path_list, path_points):
@@ -108,8 +92,8 @@ def simulate_pawn_hit(move):
     between_row_points = (row_start + row_end) // 2
     between_column_points = (column_start + column_end) // 2
 
-    pkt.points_for_pawn_hit(move)
-    pkt.update_points(row_start, column_start, row_end, column_end)
+    score.points_for_pawn_hit(move)
+    score.update_points(row_start, column_start, row_end, column_end)
 
     remember_figure = game.Game.board[between_row_points][between_column_points]
     jumper = game.Game.board[row_start][column_start]
@@ -130,31 +114,31 @@ def back_simulated_pawn_hit(move, remember_figure, jumper):
     if game.Game.player == con.PLAYER_ONE:
         if remember_figure == con.BLACK_PAWN:
             game.Game.black_score += con.POINTS_PAWN
-            game.Game.black_score += pkt.board_points_black(between_row, between_column)
+            game.Game.black_score += score.board_points_black(between_row, between_column)
 
         elif remember_figure == con.BLACK_QUEEN:
             game.Game.black_score += con.POINTS_QUEEN
-            game.Game.black_score += pkt.board_points_black(between_row, between_column)
+            game.Game.black_score += score.board_points_black(between_row, between_column)
     else:
         if remember_figure == con.WHITE_PAWN:
             game.Game.white_score += con.POINTS_PAWN
-            game.Game.white_score += pkt.board_points_white(between_row, between_column)
+            game.Game.white_score += score.board_points_white(between_row, between_column)
 
         elif remember_figure == con.WHITE_QUEEN:
             game.Game.white_score += con.POINTS_QUEEN
-            game.Game.white_score += pkt.board_points_white(between_row, between_column)
+            game.Game.white_score += score.board_points_white(between_row, between_column)
 
     game.Game.board[row_end][column_end] = con.EMPTY_FIELD
     game.Game.board[between_row][between_column] = remember_figure
     game.Game.board[row_start][column_start] = jumper
 
-    pkt.cancel_update_points(row_end, column_end, row_start, column_start)
+    score.cancel_update_points(row_end, column_end, row_start, column_start)
 
 
 
 def queen_move(path_list):
-    """ Funkcja sprawdza mozliwe ruchy krolowa. """
-    chessboard.czytaj_figury()
+    """ Checking all available queen's moves. """
+    chessboard.read_figures()
 
     if game.Game.player == con.PLAYER_ONE:
         for skad in game.Game.white_queens:
@@ -166,10 +150,10 @@ def queen_move(path_list):
                     path.append((skad[0], skad[1]))
                     path.append((skad[0] + i, skad[1] + i))
                     path_list.append(path)
-                    pkt.update_points(skad[0], skad[1], skad[0] + i, skad[1] + i)
+                    score.update_points(skad[0], skad[1], skad[0] + i, skad[1] + i)
                     score_difference = game.Game.white_score - game.Game.black_score
                     game.Game.path_points.append(score_difference)
-                    pkt.cancel_update_points(skad[0] + i, skad[1] + i, skad[0], skad[1])
+                    score.cancel_update_points(skad[0] + i, skad[1] + i, skad[0], skad[1])
 
                 move_tuple = rules.check_if_queen_hits(skad[0], skad[1],
                                                        skad[0] + i, skad[1] - i)
@@ -178,10 +162,10 @@ def queen_move(path_list):
                     path.append((skad[0], skad[1]))
                     path.append((skad[0] + i, skad[1] - i))
                     path_list.append(path)
-                    pkt.update_points(skad[0], skad[1], skad[0] + i, skad[1] - i)
+                    score.update_points(skad[0], skad[1], skad[0] + i, skad[1] - i)
                     score_difference = game.Game.white_score - game.Game.black_score
                     game.Game.path_points.append(score_difference)
-                    pkt.cancel_update_points(skad[0] + i, skad[1] - i, skad[0], skad[1])
+                    score.cancel_update_points(skad[0] + i, skad[1] - i, skad[0], skad[1])
 
     else:
         for skad in game.Game.black_queens:
@@ -193,10 +177,10 @@ def queen_move(path_list):
                     path.append((skad[0], skad[1]))
                     path.append((skad[0] + i, skad[1] + i))
                     path_list.append(path)
-                    pkt.update_points(skad[0], skad[1], skad[0] + i, skad[1] + i)
+                    score.update_points(skad[0], skad[1], skad[0] + i, skad[1] + i)
                     score_difference = game.Game.white_score - game.Game.black_score
                     game.Game.path_points.append(score_difference)
-                    pkt.cancel_update_points(skad[0] + i, skad[1] + i, skad[0], skad[1])
+                    score.cancel_update_points(skad[0] + i, skad[1] + i, skad[0], skad[1])
 
                 move_tuple = rules.check_if_queen_hits(skad[0], skad[1],
                                                        skad[0] + i, skad[1] - i)
@@ -205,10 +189,10 @@ def queen_move(path_list):
                     path.append((skad[0], skad[1]))
                     path.append((skad[0] + i, skad[1] - i))
                     path_list.append(path)
-                    pkt.update_points(skad[0], skad[1], skad[0] + i, skad[1] - i)
+                    score.update_points(skad[0], skad[1], skad[0] + i, skad[1] - i)
                     score_difference = game.Game.white_score - game.Game.black_score
                     game.Game.path_points.append(score_difference)
-                    pkt.cancel_update_points(skad[0] + i, skad[1] - i, skad[0], skad[1])
+                    score.cancel_update_points(skad[0] + i, skad[1] - i, skad[0], skad[1])
 
 
 
@@ -253,8 +237,8 @@ def simulate_queen_hit(move, hit):
     remember_figure = game.Game.board[row_enemy][column_enemy]
     jumper = game.Game.board[row_start][column_start]
 
-    pkt.points_for_queen_hit((0, row_enemy, column_enemy))
-    pkt.update_points(row_start, column_start, row_end, column_end)
+    score.points_for_queen_hit((0, row_enemy, column_enemy))
+    score.update_points(row_start, column_start, row_end, column_end)
 
     game.Game.board[row_start][column_start] = con.EMPTY_FIELD
     game.Game.board[row_enemy][column_enemy] = con.EMPTY_FIELD
@@ -270,19 +254,19 @@ def back_simulated_queen_hit(move, enemy_pawn, remember_figure, jumper):
     if game.Game.player == con.PLAYER_ONE:
         if remember_figure == con.BLACK_PAWN:
             game.Game.black_score += con.POINTS_PAWN
-            game.Game.black_score += pkt.board_points_black(row_enemy, column_enemy)
+            game.Game.black_score += score.board_points_black(row_enemy, column_enemy)
         elif remember_figure == con.BLACK_QUEEN:
             game.Game.black_score += con.POINTS_QUEEN
-            game.Game.black_score += pkt.board_points_black(row_enemy, column_enemy)
+            game.Game.black_score += score.board_points_black(row_enemy, column_enemy)
     else:
         if remember_figure == con.WHITE_PAWN:
             game.Game.white_score += con.POINTS_PAWN
-            game.Game.white_score += pkt.board_points_white(row_enemy, column_enemy)
+            game.Game.white_score += score.board_points_white(row_enemy, column_enemy)
         elif remember_figure == con.WHITE_QUEEN:
             game.Game.white_score += con.POINTS_QUEEN
-            game.Game.white_score += pkt.board_points_white(row_enemy, column_enemy)
+            game.Game.white_score += score.board_points_white(row_enemy, column_enemy)
 
     game.Game.board[row_start][column_start] = jumper
     game.Game.board[row_enemy][column_enemy] = remember_figure
     game.Game.board[row_end][column_end] = con.EMPTY_FIELD
-    pkt.cancel_update_points(row_end, column_end, row_start, column_start)
+    score.cancel_update_points(row_end, column_end, row_start, column_start)

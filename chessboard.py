@@ -3,8 +3,8 @@ import const as con
 import game
 
 
-def wyswietl():
-    """ Funkcja wyswietla aktualny stan gry. """
+def show_board():
+    """ Function displays actual game state in console. """
     for i in range(con.SIZE):
         print(i, "\t", game.Game.board[i])
         print('-------------------------------------------------------')
@@ -12,15 +12,15 @@ def wyswietl():
     print("\n\t   0    1    2    3    4    5    6    7    8    9 \n")
 
 
-def uklad_czyszczenie():
-    """ Czyszczenie planszy z figur. """
+def clear_chessboard():
+    """ Clearing chessboard. """
     for row in range(0, con.SIZE, 1):
         for column in range(0, con.SIZE, 1):
             game.Game.board[row][column] = con.EMPTY_FIELD
 
 
-def uklad_poczatkowy():
-    """ Funkcja inicjalizuje plansze pionkami """
+def set_game():
+    """ Initialization chessboard by figures. """
 
     for row in range(0, con.LINES_OF_PAWNS, 1):
         if row % 2:
@@ -38,12 +38,9 @@ def uklad_poczatkowy():
             for column in range(1, con.SIZE, 2):
                 game.Game.board[row][column] = con.WHITE_PAWN
 
-    game.Game.board[6][1] = con.WHITE_QUEEN
-    game.Game.board[7][2] = con.WHITE_QUEEN
-    game.Game.board[3][8] = con.BLACK_QUEEN
 
-def czytaj_figury():
-    """ Tworzenie listy pionkow graczy. """
+def read_figures():
+    """ Creating a list of players figures. """
     game.Game.white_pawns.clear()
     game.Game.white_queens.clear()
 
@@ -60,8 +57,9 @@ def czytaj_figury():
             elif game.Game.board[row][column] == con.BLACK_QUEEN:
                 game.Game.black_queens.append((row, column))
 
-def wyniesienie(x_coord, y_coord):
-    """ Zamiana piona na damke, gdy dojdzie do konca planszy. """
+
+def promotion(x_coord, y_coord):
+    """ Making a promotion. Pawn becomes a queen. """
     if game.Game.player == con.PLAYER_ONE:
         if x_coord == 0 and game.Game.board[0][y_coord] == con.WHITE_PAWN:
             game.Game.board[0][y_coord] = con.WHITE_QUEEN
@@ -76,7 +74,7 @@ def wyniesienie(x_coord, y_coord):
 
 
 def test_1():
-    """ Test wielokrotnego bicia. """
+    """ Preparing chessboard for multi-hit test. """
     game.Game.attack_from.clear()
     game.Game.board[6][3] = con.BLACK_PAWN
     game.Game.board[5][4] = con.WHITE_PAWN
@@ -91,13 +89,13 @@ def test_1():
     game.Game.board[4][1] = con.BLACK_PAWN
 
 def test_2():
-    """ Test wyniesienia. """
+    """ Preparing chessboard for promotion test. """
     game.Game.attack_from.clear()
     game.Game.board[1][2] = con.WHITE_PAWN
     game.Game.board[8][7] = con.BLACK_PAWN
 
 def test_3():
-    """ Test wygranej bialych. """
+    """ Preparing chessboard for win test. """
     game.Game.attack_from.clear()
     game.Game.board[5][6] = con.BLACK_QUEEN
     game.Game.board[6][5] = con.WHITE_PAWN

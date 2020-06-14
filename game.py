@@ -1,4 +1,4 @@
-"""ZMIENNE."""
+"""Variables."""
 import const
 
 class Game:

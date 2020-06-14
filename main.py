@@ -4,19 +4,23 @@ import pygame
 import chessboard
 import design
 import game
-import score as pkt
+import score
+import tests
 
 def draughts():
     """ Main function """
 
     pygame.init()
-    _ = design.Look() #poradnik
+    _ = design.Look()
     _ = game.Game()
-    chessboard.uklad_poczatkowy()
-    chessboard.wyswietl()
-    pkt.punktuj()
-    pkt.points_load()
-    #pkt.wyswietl_punktacje()
+    chessboard.set_game()
+    chessboard.show_board()
+    score.punktuj()
+    score.points_load()
+    #score.wyswietl_punktacje()
+    tests.multi_hit_test()
+    tests.promotion_test()
+    tests.win_test()
     design.run_window()
 
 

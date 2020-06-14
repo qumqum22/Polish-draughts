@@ -2,7 +2,7 @@
 import chessboard
 import const as con
 import game
-import score as pkt
+import score
 
 
 def check_position(x_coord, y_coord):
@@ -43,9 +43,7 @@ def player_move(row_start, column_start, row_end, column_end):
                     break
             else:
                 return False
-
             for path in game.Game.path_list:
-                #print('sprawdzam {}'.format(path))
                 if not path[1] == move_from:
                     index = game.Game.path_list.index(path)
                     game.Game.path_list.remove(path)
@@ -53,8 +51,6 @@ def player_move(row_start, column_start, row_end, column_end):
                 else:
                     path.pop(0)
 
-    #print('All max: {}'.format(gra.Game.path_list))
-    #print('All points: {}'.format(gra.Game.path_points))
 
     if check_position(row_start, column_start) and check_position(row_end, column_end):
         return make_move(move)
@@ -114,10 +110,10 @@ def check_if_pawn_hits(row_start, column_start, row_end, column_end):
 
 
 def check_if_queen_hits(row_start, column_start, row_end, column_end):
-    """ Sprawdza ruch damki, zwraca liczbe pionków przeciwnika pomiedzy,
-    pozycje x,y pionka przeciwnika oraz czy ruch mozliwy"""
+    """ Checking possible queen's hits, returns: number of enemy pawns between start and end, coordinates
+    of enemy figure , is_move_possible and information."""
     if not check_position(row_end, column_end):
-        return 0, 0, 0, False, "Niepoprawny cel"
+        return 0, 0, 0, False, "Invalid destiny"
 
     row = row_end - row_start
     column = column_end - column_start
@@ -153,14 +149,14 @@ def check_if_queen_moves(move, lane, row_step, column_step):
                     x_pawn = r_step
                     y_pawn = c_step
                 elif game.Game.board[r_step][c_step] in [con.WHITE_PAWN, con.WHITE_QUEEN]:
-                    return 0, 0, 0, False, "Nie mozesz skakac poprzez swoich"
+                    return 0, 0, 0, False, "You cannot jumps through your figures"
             else:
                 if game.Game.board[r_step][c_step] in [con.WHITE_PAWN, con.WHITE_QUEEN]:
                     figures_counter += 1
                     x_pawn = r_step
                     y_pawn = c_step
                 elif game.Game.board[r_step][c_step] in [con.BLACK_PAWN, con.BLACK_QUEEN]:
-                    return 0, 0, 0, False, "Nie mozesz skakac poprzez swoich"
+                    return 0, 0, 0, False, "You cannot jumps through your figures"
 
             if row_step > 0:
                 row_step += 1
@@ -171,13 +167,13 @@ def check_if_queen_moves(move, lane, row_step, column_step):
             else:
                 column_step -= 1
         if figures_counter < 2:
-            return figures_counter, x_pawn, y_pawn, True, "Poprawny move"
+            return figures_counter, x_pawn, y_pawn, True, "Correct move"
 
     return 0, 0, 0, False, "Blad ruchu"
 
 
 def service_pawn(move, figure, path_list):
-    """OBSLUGA PIONKA. """
+    """Pawn service. """
     row_start, column_start, row_end, column_end = move
 
     between_row = (row_start + row_end) // 2
@@ -188,26 +184,26 @@ def service_pawn(move, figure, path_list):
 
             game.Game.board[row_start][column_start] = con.EMPTY_FIELD
             if abs(row_end - row_start) == 2:
-                pkt.points_for_pawn_hit(move)
+                score.points_for_pawn_hit(move)
 
             game.Game.board[between_row][between_column] = con.EMPTY_FIELD
             game.Game.board[row_end][column_end] = figure
-            pkt.update_points(row_start, column_start, row_end, column_end)
+            score.update_points(row_start, column_start, row_end, column_end)
 
             if len(path_element) > 2:
                 game.Game.attack_from.clear()
                 game.Game.attack_from.append(path_element[1])
-                print(game.Game.attack_from)
+                #print(game.Game.attack_from)
                 return False
-            chessboard.wyniesienie(row_end, column_end)
+            chessboard.promotion(row_end, column_end)
             game.Game.attack_from.clear()
             return True
-    #print("Ruch niedozwolony")
+    print("Illegal move")
     return False
 
 
 def service_queen(move, figure, path_list):
-    """OBSLUGA DAMKI. """
+    """Queen service. """
     row_start, column_start, row_end, column_end = move
 
     for path_element in path_list:
@@ -218,7 +214,7 @@ def service_queen(move, figure, path_list):
             if temp_list[0] == 1:  # Prawda/ fałsz     Bicie / zwykly ruch
                 game.Game.board[row_start][column_start] = con.EMPTY_FIELD
 
-                pkt.points_for_queen_hit(temp_list)
+                score.points_for_queen_hit(temp_list)
 
                 game.Game.board[temp_list[1]][temp_list[2]] = con.EMPTY_FIELD
                 game.Game.board[row_end][column_end] = figure
@@ -226,14 +222,14 @@ def service_queen(move, figure, path_list):
                 if len(path_element) > 2:
                     game.Game.attack_from.clear()
                     game.Game.attack_from.append(path_element[1])
-                    pkt.update_points(row_start, column_start, row_end, column_end)
+                    score.update_points(row_start, column_start, row_end, column_end)
                     print(game.Game.attack_from)
                     return False
             else:
                 game.Game.board[row_start][column_start] = con.EMPTY_FIELD
                 game.Game.board[row_end][column_end] = figure
 
-            pkt.update_points(row_start, column_start, row_end, column_end)
+            score.update_points(row_start, column_start, row_end, column_end)
             game.Game.attack_from.clear()
             return True
     return False
