@@ -1,57 +1,28 @@
-import time
-from const import *
-from design import *
-from board import *
-from temp import *
-from rules import *
-from punktacja import *
+""" Main module. """
+import pygame
 
-def rozgrywka():
-    global gracz
-    global graczK
-    ukladPoczatkowy()
-    wyswietl()
-    punktyStart()
+import chessboard
+import design
+import game
+import score
+import tests
 
+def draughts():
+    """ Main function """
 
-    while(1):
-
-        if gracz == 1:
-            graczK = 0
-            ruch, ruch2 = input('Biale: Wskaz pionka i cel: ').split()
-            if ruch == 'z':
-                break
-            if not ruchGracza(ruch, ruch2, gracz, graczK):
-                gracz *= -1
-                graczK = -graczK - 1
-        else:
-            graczK = -1
-            ruch, ruch2 = input('Czarne: Wskaz pionka i cel: ').split()
-            if ruch == 'z':
-                break
-            if not ruchGracza(ruch, ruch2, gracz, graczK):
-                gracz *= -1
-                graczK = -graczK - 1
+    pygame.init()
+    _ = design.Look()
+    _ = game.Game()
+    chessboard.set_game()
+    chessboard.show_board()
+    score.punktuj()
+    score.points_load()
+    #score.wyswietl_punktacje()
+    tests.multi_hit_test()
+    tests.promotion_test()
+    tests.win_test()
+    design.run_window()
 
 
-        wyswietl()
-        gracz *= -1
-    #wyswietlpunktacje() #wyswietla szachownice punktow
-
-rozgrywka()
-
-#spr. zasady gry stupolowych pod wzgl. maksymalnego bicia. Zrobic musowe bicie.
-#funkcja ocen pozycje - liczy laczną pozycje gracza po ruchu pomocnicza do evaluate
-#Dodanie oceny ruchu królowej // krolowa wiecej punkt, pion mniej
-#Dodanie sprawdzania ruchów królowej
-#moge zrobic klase ze zmiennych globalnych
-
-'''
-plansza2 = [[' ' for column in range(SIZE)] for row in range(SIZE)]
-for row in range(0, SIZE, 1):
-    for column in range(0, SIZE, 1):
-        plansza2[row][column] = f'[{row}][{column}]'
-
-for i in range(SIZE):
-    print(i,"\t", plansza2[i])
-'''
+if __name__ == '__main__':
+    draughts()
