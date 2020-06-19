@@ -13,14 +13,15 @@ def draughts():
     pygame.init()
     _ = design.Look()
     _ = game.Game()
+    test = tests.BoardTest()
     chessboard.set_game()
     chessboard.show_board()
     score.punktuj()
     score.points_load()
     #score.wyswietl_punktacje()
-    tests.multi_hit_test()
-    tests.promotion_test()
-    tests.win_test()
+    test.multi_hit_test()
+    test.promotion_test()
+    test.test_win()
     design.run_window()
 
 
