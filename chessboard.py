@@ -73,29 +73,3 @@ def promotion(x_coord, y_coord):
     return False
 
 
-def test_1():
-    """ Preparing chessboard for multi-hit test. """
-    game.Game.attack_from.clear()
-    game.Game.board[6][3] = con.BLACK_PAWN
-    game.Game.board[5][4] = con.WHITE_PAWN
-    game.Game.board[5][6] = con.WHITE_PAWN
-    game.Game.board[7][6] = con.WHITE_PAWN
-
-
-    game.Game.board[2][1] = con.BLACK_PAWN
-
-    game.Game.board[2][3] = con.BLACK_PAWN
-    game.Game.board[4][3] = con.BLACK_PAWN
-    game.Game.board[4][1] = con.BLACK_PAWN
-
-def test_2():
-    """ Preparing chessboard for promotion test. """
-    game.Game.attack_from.clear()
-    game.Game.board[1][2] = con.WHITE_PAWN
-    game.Game.board[8][7] = con.BLACK_PAWN
-
-def test_3():
-    """ Preparing chessboard for win test. """
-    game.Game.attack_from.clear()
-    game.Game.board[5][6] = con.BLACK_QUEEN
-    game.Game.board[6][5] = con.WHITE_PAWN

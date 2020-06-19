@@ -9,7 +9,7 @@ import game
 import moves
 import score
 import rules
-
+import tests
 
 class Look:
     """ Class initializes Graphical interface"""
@@ -92,7 +92,7 @@ class Look:
         if Look.test_hit_button.is_over(start_x, start_y):
             game.Game.reload_variables()
             chessboard.clear_chessboard()
-            chessboard.test_1()
+            tests.test_1()
             chessboard.show_board()
             score.points_load()
 
@@ -100,7 +100,7 @@ class Look:
         if Look.test_promo_button.is_over(start_x, start_y):
             game.Game.reload_variables()
             chessboard.clear_chessboard()
-            chessboard.test_2()
+            tests.test_2()
             chessboard.show_board()
             score.points_load()
 
@@ -108,7 +108,7 @@ class Look:
         if Look.test_win_button.is_over(start_x, start_y):
             game.Game.reload_variables()
             chessboard.clear_chessboard()
-            chessboard.test_3()
+            tests.test_3()
             chessboard.show_board()
             score.points_load()
 
